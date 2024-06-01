@@ -1,11 +1,21 @@
-const express = require('express')
-const app = express()
-const port = 3000
+const express = require("express");
+const cors = require("cors");
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+const app = express();
+const port = 3000;
+
+app.use(cors());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+app.post("/login", (req, res) => {
+  res.send("Hello World!");
+});
+
+app.post("/register", (req, res) => {
+  res.send("Success!")
+});
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+  console.log(`Backend listening on port ${port}`);
+});
