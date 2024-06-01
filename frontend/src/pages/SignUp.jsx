@@ -21,16 +21,18 @@ export default function SignUp() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const response = await axios.post("http://localhost:3000/signup", event.currentTarget, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    alert(response.data);
-
-    // Change route to Sign Up successful page if necessary
-    return navigate("/login");
+    try {
+      const response = await axios.post("http://localhost:3000/signup", event.currentTarget, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      alert(response.data);
+      // Change route to Sign Up successful page if necessary
+      return navigate("/login");
+    } catch (err) {
+      alert("Backend is down! Please try again later.");
+    }
   };
 
   return (

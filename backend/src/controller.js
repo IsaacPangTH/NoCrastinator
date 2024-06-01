@@ -18,7 +18,7 @@ app.post("/signup", async (req, res) => {
     await signup(req.body);
     res.json("Sign Up successful!");
   } catch (error) {
-    res.json(error);
+    res.json(error.error);
   }
 });
 
