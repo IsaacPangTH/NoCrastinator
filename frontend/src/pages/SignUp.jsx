@@ -11,17 +11,28 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import NoCrastinatorLogo from "../assets/NoCrastinatorLogo.png";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const defaultTheme = createTheme();
 
 export default function SignUp() {
-  const handleSubmit = (event) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    try {
+      const response = await axios.post("http://localhost:3000/signup", event.currentTarget, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      alert(response.data);
+      // Change route to Sign Up successful page if necessary
+      return navigate("/login");
+    } catch (err) {
+      alert("Backend is down! Please try again later.");
+    }
   };
 
   return (
@@ -34,13 +45,12 @@ export default function SignUp() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-          }}
-        >
+          }}>
           <img src={NoCrastinatorLogo} className="logoBig" />
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
