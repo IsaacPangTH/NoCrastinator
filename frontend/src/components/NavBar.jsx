@@ -22,7 +22,7 @@ const icons = [
   <LeaderboardOutlinedIcon color="primary" />,
 ];
 
-export default function NavBar({ children }) {
+export default function NavBar({ children, p = 3 }) {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -69,7 +69,8 @@ export default function NavBar({ children }) {
           </List>
         </Box>
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Box component="main" sx={{ flexGrow: 1, p: p }}>
+        <Toolbar />
         {children}
       </Box>
     </Box>
