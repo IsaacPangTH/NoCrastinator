@@ -9,17 +9,27 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import NoCrastinatorLogo from "../assets/NoCrastinatorLogo.png";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const defaultTheme = createTheme();
 
 export default function SignIn() {
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    try {
+      const response = await axios.post("http://localhost:3000/login", event.currentTarget, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      alert(response.data);
+
+      // Change route to Tasklist
+      //return navigate("/tasklist");
+    } catch (err) {
+      alert("Backend is down! Please try again later.");
+    }
   };
 
   return (
@@ -32,8 +42,7 @@ export default function SignIn() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-          }}
-        >
+          }}>
           <img src={NoCrastinatorLogo} className="logoBig" />
           <Typography component="h1" variant="h5">
             Sign in
