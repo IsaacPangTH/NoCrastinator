@@ -5,12 +5,14 @@ import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
-export default function Task({ title, category = null, dueDate = null }) {
-  const [isCompleted, setIsCompleted] = useState(false);
+export default function Task({ id, title, onComplete, onUncomplete, completed }) {
+  const [isCompleted, setIsCompleted] = useState(completed);
   const handleComplete = () => {
+    onComplete(id);
     setIsCompleted(true);
   };
   const handleUncomplete = () => {
+    onUncomplete(id);
     setIsCompleted(false);
   };
 
@@ -19,7 +21,9 @@ export default function Task({ title, category = null, dueDate = null }) {
       <IconButton onClick={isCompleted ? handleUncomplete : handleComplete}>
         {isCompleted ? <CheckCircleIcon /> : <CircleOutlinedIcon />}
       </IconButton>
-      <Typography>{title}</Typography>
+      <Typography sx={isCompleted ? { textDecoration: "line-through", color: "#818181" } : null}>
+        {title}
+      </Typography>
     </Box>
   );
 }
