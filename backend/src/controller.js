@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const { signup } = require("./signup");
+const { login } = require("./login");
 
 const app = express();
 const port = 3000;
@@ -10,7 +11,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.post("/login", async (req, res) => {
-  res.json("Login successful!");
+  try {
+    await login(req.body);
+    res.json("Login successful!");
+  } catch (error) {
+    res.json(error.message);
+  }
 });
 
 app.post("/signup", async (req, res) => {
@@ -18,7 +24,7 @@ app.post("/signup", async (req, res) => {
     await signup(req.body);
     res.json("Sign Up successful!");
   } catch (error) {
-    res.json(error.error);
+    res.json(error.message);
   }
 });
 
