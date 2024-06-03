@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 const defaultTheme = createTheme();
 
 export default function SignIn() {
+  const navigate = useNavigate();
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -24,9 +25,9 @@ export default function SignIn() {
         },
       });
       alert(response.data);
-
-      // Change route to Tasklist
-      //return navigate("/tasklist");
+      if (response.data == "Login successful!") {
+        return navigate("/tasklist");
+      }
     } catch (err) {
       alert("Backend is down! Please try again later.");
     }
