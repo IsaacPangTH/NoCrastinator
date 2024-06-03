@@ -18,7 +18,6 @@ const defaultTheme = createTheme();
 
 export default function SignUp() {
   const navigate = useNavigate();
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -28,8 +27,9 @@ export default function SignUp() {
         },
       });
       alert(response.data);
-      // Change route to Sign Up successful page if necessary
-      return navigate("/login");
+      if (response.data == "Sign Up successful!") {
+        return navigate("/login");
+      }
     } catch (err) {
       alert("Backend is down! Please try again later.");
     }

@@ -5,7 +5,6 @@ const signup = async (data) => {
     throw new Error("Invalid Form!");
   }
   const check = db.prepare("SELECT * FROM accounts WHERE email=?").get(data.email);
-  console.log(check);
   if (!check) {
     db.prepare(
       "INSERT INTO accounts (first_name, last_name, email, password) VALUES (?, ?, ?, ?)"
