@@ -17,7 +17,7 @@ const defaultTheme = createTheme();
 export default function SignIn() {
   const handleSubmit = async (event) => {
     const navigate = useNavigate();
-    
+
     event.preventDefault();
     try {
       const response = await axios.post("http://localhost:3000/login", event.currentTarget, {
@@ -27,8 +27,7 @@ export default function SignIn() {
       });
       alert(response.data);
 
-      // Change route to Tasklist
-      //return navigate("/tasklist");
+      return navigate("/tasklist");
     } catch (err) {
       alert("Backend is down! Please try again later.");
     }
