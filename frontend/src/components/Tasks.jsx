@@ -104,8 +104,7 @@ export default function Tasks() {
             setTasks(tasksCopy);
             handleCloseAddTask();
           },
-        }}
-      >
+        }}>
         <DialogTitle>Add Task</DialogTitle>
         <DialogContent>
           <TextField

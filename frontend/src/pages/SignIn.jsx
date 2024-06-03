@@ -19,13 +19,16 @@ export default function SignIn() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3000/login", event.currentTarget, {
+      const form = event.currentTarget;
+      const response = await axios.post("http://localhost:3000/login", form, {
         headers: {
           "Content-Type": "application/json",
         },
       });
-      alert(response.data);
-      if (response.data == "Login successful!") {
+      console.log(response.data);
+      alert(response.data.message);
+      if (response.data.message == "Login successful!") {
+        sessionStorage.setItem("user", response.data.name);
         return navigate("/tasklist");
       }
     } catch (err) {

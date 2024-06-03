@@ -12,10 +12,10 @@ app.use(express.json());
 
 app.post("/login", async (req, res) => {
   try {
-    await login(req.body);
-    res.json("Login successful!");
+    const name = await login(req.body);
+    res.json({ message: "Login successful!", name: name });
   } catch (error) {
-    res.json(error.message);
+    res.json({ message: error.message });
   }
 });
 
