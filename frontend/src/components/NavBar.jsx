@@ -39,8 +39,7 @@ export default function NavBar({ children, p = 3 }) {
           width: drawerWidth,
           flexShrink: 0,
           [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: "border-box" },
-        }}
-      >
+        }}>
         <Toolbar />
         <Box sx={{ overflow: "auto" }}>
           <List>
@@ -55,8 +54,7 @@ export default function NavBar({ children, p = 3 }) {
                       alignItems: "center",
                       justifyContent: "center",
                       width: drawerWidth,
-                    }}
-                  >
+                    }}>
                     {icons[index]}
                     <ListItemText
                       primary={text}

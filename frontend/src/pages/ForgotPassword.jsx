@@ -31,8 +31,7 @@ export default function ForgotPassword() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-          }}
-        >
+          }}>
           <img src={NoCrastinatorLogo} className="logoBig" />
           <Box sx={{ alignItems: "left" }}>
             <Typography component="h1" variant="h5">

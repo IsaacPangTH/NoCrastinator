@@ -12,6 +12,7 @@ const login = async (data) => {
     if (!check) {
       throw new Error("Wrong password!");
     }
+    return check.first_name;
   } else {
     throw new Error("Email is not registered!");
   }
