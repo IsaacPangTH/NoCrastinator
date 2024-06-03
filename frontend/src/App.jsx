@@ -5,6 +5,7 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import ForgotPassword from "./pages/ForgotPassword";
 import TaskList from "./pages/TaskList";
+import Home from "./pages/Home";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/newPassword" element={<ForgotPassword />} />
         <Route path="/tasklist" element={<TaskList />} />
+        <Route path="/" element={<Home />} />
       </Routes>
     </BrowserRouter>
   );
