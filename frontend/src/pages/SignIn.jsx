@@ -16,6 +16,8 @@ const defaultTheme = createTheme();
 
 export default function SignIn() {
   const handleSubmit = async (event) => {
+    const navigate = useNavigate();
+    
     event.preventDefault();
     try {
       const response = await axios.post("http://localhost:3000/login", event.currentTarget, {
