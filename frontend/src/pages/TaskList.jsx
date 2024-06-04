@@ -1,14 +1,20 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import NavBar from "../components/NavBar";
 import Task from "../components/Task";
 import Tasks from "../components/Tasks";
 import { useNavigate } from "react-router-dom";
 
 export default function TaskList() {
+  const alertShownRef = useRef(false);
   const navigate = useNavigate();
+
   useEffect(() => {
-    if (!sessionStorage.getItem("user")) {
-      return navigate("/login");
+    if (!alertShownRef.current) {
+      if (!sessionStorage.getItem("user")) {
+        alert("Please Login!");
+        alertShownRef.current = true;
+        return navigate("/login");
+      }
     }
   }, []);
 
