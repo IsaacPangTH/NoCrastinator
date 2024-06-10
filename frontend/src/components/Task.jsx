@@ -6,22 +6,12 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
 export default function Task({ id, title, onComplete, onUncomplete, completed }) {
-  const [isCompleted, setIsCompleted] = useState(completed);
-  const handleComplete = () => {
-    onComplete(id);
-    setIsCompleted(true);
-  };
-  const handleUncomplete = () => {
-    onUncomplete(id);
-    setIsCompleted(false);
-  };
-
   return (
     <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-      <IconButton onClick={isCompleted ? handleUncomplete : handleComplete}>
-        {isCompleted ? <CheckCircleIcon /> : <CircleOutlinedIcon />}
+      <IconButton onClick={completed ? () => onUncomplete(id) : () => onComplete(id)}>
+        {completed ? <CheckCircleIcon /> : <CircleOutlinedIcon />}
       </IconButton>
-      <Typography sx={isCompleted ? { textDecoration: "line-through", color: "#818181" } : null}>
+      <Typography sx={completed ? { textDecoration: "line-through", color: "#818181" } : null}>
         {title}
       </Typography>
     </Box>
