@@ -35,22 +35,25 @@ export default function Task({
         >
           {title}
         </Typography>
-        <Typography
-          variant="caption"
-          color={
-            !isTimeSpecific && dueDate.hasSame(DateTime.now(), "day")
-              ? "black"
-              : dueDate < DateTime.now()
-              ? "red"
-              : "black"
-          }
-        >
-          {dueDate != null
-            ? isTimeSpecific
-              ? dueDate.toLocaleString(DateTime.DATETIME_SHORT)
-              : dueDate.toLocaleString(DateTime.DATE_SHORT)
-            : ""}
-        </Typography>
+
+        {dueDate !== null ? (
+          <Typography
+            variant="caption"
+            color={
+              !isTimeSpecific && dueDate.hasSame(DateTime.now(), "day")
+                ? "black"
+                : dueDate < DateTime.now()
+                ? "red"
+                : "black"
+            }
+          >
+            {isTimeSpecific
+              ? "Due: " + dueDate.toLocaleString(DateTime.DATETIME_SHORT)
+              : "Due: " + dueDate.toLocaleString(DateTime.DATE_SHORT)}
+          </Typography>
+        ) : (
+          <></>
+        )}
       </Box>
     </Box>
   );
