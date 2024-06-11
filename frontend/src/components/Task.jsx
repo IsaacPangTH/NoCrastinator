@@ -35,7 +35,16 @@ export default function Task({
         >
           {title}
         </Typography>
-        <Typography variant="caption">
+        <Typography
+          variant="caption"
+          color={
+            !isTimeSpecific && dueDate.hasSame(DateTime.now(), "day")
+              ? "black"
+              : dueDate < DateTime.now()
+              ? "red"
+              : "black"
+          }
+        >
           {dueDate != null
             ? isTimeSpecific
               ? dueDate.toLocaleString(DateTime.DATETIME_SHORT)
