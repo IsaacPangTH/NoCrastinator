@@ -15,6 +15,7 @@ import {
   TextField,
 } from "@mui/material";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
+import { DateTime } from "luxon";
 
 export default function Tasks() {
   const [tasks, setTasks] = useState([]);
@@ -45,15 +46,20 @@ export default function Tasks() {
       <List>
         {tasks
           .filter((task) => !task.isCompleted)
+          .toSorted((x, y) => x.dueDate.diff(y.dueDate).toMillis())
           .map((task) => (
             <>
-              <ListItem key={task.id}>
+              <ListItem key={task.id} sx={{ width: "100%" }}>
                 <Task
                   id={task.id}
                   title={task.title}
                   onComplete={handleComplete}
                   onUncomplete={handleUncomplete}
                   completed={task.isCompleted}
+                  dueDate={task.dueDate}
+                  dateSpecified={task.dateSpecfied}
+                  timeSpecified={task.timeSpecified}
+                  className="task"
                 />
               </ListItem>
               <Divider />
@@ -104,7 +110,8 @@ export default function Tasks() {
             setTasks(tasksCopy);
             handleCloseAddTask();
           },
-        }}>
+        }}
+      >
         <DialogTitle>Add Task</DialogTitle>
         <DialogContent>
           <TextField
