@@ -13,8 +13,7 @@ export default function Task({
   onUncomplete,
   completed,
   dueDate,
-  dateSpecified,
-  timeSpecified,
+  isTimeSpecific = false,
 }) {
   return (
     <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", width: "100%" }}>
@@ -37,8 +36,8 @@ export default function Task({
           {title}
         </Typography>
         <Typography variant="caption">
-          {dateSpecified
-            ? timeSpecified
+          {dueDate != null
+            ? isTimeSpecific
               ? dueDate.toLocaleString(DateTime.DATETIME_SHORT)
               : dueDate.toLocaleString(DateTime.DATE_SHORT)
             : ""}
