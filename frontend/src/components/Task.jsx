@@ -12,7 +12,7 @@ export default function Task({
   onComplete,
   onUncomplete,
   completed,
-  dueDate = -62135596800000,
+  dueDate = DateTime.utc(1, 1, 1),
   isTimeSpecific = false,
 }) {
   return (
