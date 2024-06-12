@@ -36,7 +36,7 @@ export default function Task({
           {title}
         </Typography>
 
-        {dueDate !== null ? (
+        {dueDate !== null && (
           <Typography
             variant="caption"
             color={
@@ -50,8 +50,6 @@ export default function Task({
               ? "Due: " + dueDate.toLocaleString(DateTime.DATETIME_SHORT)
               : "Due: " + dueDate.toLocaleString(DateTime.DATE_SHORT)}
           </Typography>
-        ) : (
-          <></>
         )}
       </Box>
     </Box>

@@ -126,9 +126,7 @@ export default function Tasks() {
                 }}
                 slotProps={{ field: { clearable: true } }}
               />
-              {newTaskDueDate === null ? (
-                <></>
-              ) : (
+              {newTaskDueDate !== null && (
                 <TimePicker
                   label="Time Due (optional)"
                   viewRenderers={{
