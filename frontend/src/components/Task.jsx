@@ -12,7 +12,7 @@ export default function Task({
   onComplete,
   onUncomplete,
   completed,
-  dueDate,
+  dueDate = -62135596800000,
   isTimeSpecific = false,
 }) {
   return (
@@ -40,11 +40,10 @@ export default function Task({
           <Typography
             variant="caption"
             color={
-              !isTimeSpecific && dueDate.hasSame(DateTime.now(), "day")
+              (!isTimeSpecific && dueDate.hasSame(DateTime.now(), "day")) ||
+              dueDate >= DateTime.now()
                 ? "black"
-                : dueDate < DateTime.now()
-                ? "red"
-                : "black"
+                : "red"
             }
           >
             {isTimeSpecific
