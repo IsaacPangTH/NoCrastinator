@@ -1,20 +1,35 @@
-const db = require("better-sqlite3")("./dev.db");
+const pg = require("pg");
+const { Client } = pg;
+const DATABASE_URL =
+  process.env.DATABASE_URL || "postgres://nocrastinator:nocrastinator@localhost:5432/nocrastinator";
 
 const login = async (data) => {
   if (!data.email && !data.password) {
-    throw new Error("Invalid Form!");
+    return "Invalid Form!";
   }
-  const exist = db.prepare("SELECT * FROM accounts WHERE email=?").get(data.email);
-  if (exist) {
-    const check = db
-      .prepare("SELECT * FROM accounts WHERE email=? AND password=?")
-      .get(data.email, data.password);
-    if (!check) {
-      throw new Error("Wrong password!");
+  const client = new Client({
+    connectionString: DATABASE_URL,
+  });
+  await client.connect();
+  try {
+    const exist = await client.query("SELECT * FROM accounts WHERE email=$1", [data.email]);
+    if (exist.rows[0]) {
+      const check = await client.query("SELECT * FROM accounts WHERE email=$1 AND password=$2", [
+        data.email,
+        data.password,
+      ]);
+      if (!check.rows[0]) {
+        return "Wrong password!";
+      }
+      return { message: "Login successful!", name: check.rows[0].first_name };
+    } else {
+      return "Email is not registered!";
     }
-    return check.first_name;
-  } else {
-    throw new Error("Email is not registered!");
+  } catch (err) {
+    console.error(err);
+    return "Error! Please try again later.";
+  } finally {
+    await client.end();
   }
 };
 
