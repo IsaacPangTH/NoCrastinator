@@ -25,18 +25,15 @@ import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 export default function Tasks() {
   const [tasks, setTasks] = useState([]);
   const [addTaskDialogOpen, setAddTaskDialogOpen] = useState(false);
-  const [newTaskDueDate, setNewTaskDueDate] = useState(null);
-  const [newTaskDueTime, setNewTaskDueTime] = useState(null);
+  const [newTaskDueDateSelected, setNewTaskDueDateSelected] = useState(false);
 
   const handleAddTask = () => {
     setAddTaskDialogOpen(true);
-    setNewTaskDueDate(null);
-    setNewTaskDueTime(null);
+    setNewTaskDueDateSelected(false);
   };
   const handleCloseAddTask = () => {
     setAddTaskDialogOpen(false);
-    setNewTaskDueDate(null);
-    setNewTaskDueTime(null);
+    setNewTaskDueDateSelected(false);
   };
   const handleComplete = (id) => {
     setTasks(
@@ -83,19 +80,15 @@ export default function Tasks() {
             const formData = new FormData(event.currentTarget);
             const formJson = Object.fromEntries(formData.entries());
             const title = formJson.title;
+            const dueDate = formJson.dueDate;
+            let dueTime = formJson.dueTime;
             const tasksCopy = tasks;
             tasksCopy.push({
               id: DateTime.now(),
               title: title,
               isCompleted: false,
-              dueDate:
-                newTaskDueTime !== null
-                  ? newTaskDueDate.plus({
-                      hours: newTaskDueTime.hour,
-                      minutes: newTaskDueTime.minute,
-                    })
-                  : newTaskDueDate,
-              isTimeSpecific: newTaskDueTime !== null,
+              dueDate: dueDate,
+              dueTime: dueTime,
             });
             setTasks(tasksCopy);
             handleCloseAddTask();
@@ -110,7 +103,7 @@ export default function Tasks() {
               autoComplete="off"
               required
               margin="dense"
-              id="name"
+              id="title"
               name="title"
               label="Task"
               type="text"
@@ -120,24 +113,26 @@ export default function Tasks() {
             <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale={navigator.language}>
               <DatePicker
                 label="Due Date (optional)"
-                value={newTaskDueDate}
-                onChange={(newTaskDueDate) => {
-                  setNewTaskDueDate(newTaskDueDate);
+                id="dueDate"
+                name="dueDate"
+                slotProps={{
+                  field: { clearable: true, onClear: () => setNewTaskDueDateSelected(false) },
                 }}
-                slotProps={{ field: { clearable: true } }}
+                format="yyyy-LL-dd"
+                onChange={() => setNewTaskDueDateSelected(true)}
               />
-              {newTaskDueDate !== null && (
+              {newTaskDueDateSelected && (
                 <TimePicker
                   label="Time Due (optional)"
+                  id="dueTime"
+                  name="dueTime"
                   viewRenderers={{
                     hours: renderTimeViewClock,
                     minutes: renderTimeViewClock,
                     seconds: renderTimeViewClock,
                   }}
-                  value={newTaskDueTime}
-                  onChange={(time) => {
-                    setNewTaskDueTime(time);
-                  }}
+                  slotProps={{ field: { clearable: true } }}
+                  format="HH:mm"
                 />
               )}
             </LocalizationProvider>
@@ -165,7 +160,7 @@ export default function Tasks() {
               onUncomplete={handleUncomplete}
               completed={task.isCompleted}
               dueDate={task.dueDate}
-              isTimeSpecific={task.isTimeSpecific}
+              dueTime={task.dueTime}
               className="task"
             />
           </ListItem>
@@ -194,20 +189,23 @@ export default function Tasks() {
   }
 
   function taskDueDateComparator(task1, task2) {
-    if (task1.dueDate === null) {
+    if (task1.dueDate === "") {
       return 1;
     }
-    if (task2.dueDate === null) {
+    if (task2.dueDate === "") {
       return -1;
     }
-    if (task1.dueDate.hasSame(task2.dueDate, "day")) {
-      if (task1.isTimeSpecific !== task2.isTimeSpecific) {
-        if (task1.isTimeSpecific) {
-          return -1;
-        }
+
+    if (task1.dueDate === task2.dueDate) {
+      if (task1.dueTime === "") {
         return 1;
       }
+      if (task2.dueTime === "") {
+        return -1;
+      }
+      return DateTime.fromISO(task1.dueTime).diff(DateTime.fromISO(task2.dueTime));
     }
-    return task1.dueDate.diff(task2.dueDate).toMillis();
+
+    return DateTime.fromISO(task1.dueDate).diff(DateTime.fromISO(task2.dueDate));
   }
 }

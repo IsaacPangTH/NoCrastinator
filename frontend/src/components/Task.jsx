@@ -6,15 +6,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { DateTime } from "luxon";
 
-export default function Task({
-  id,
-  title,
-  onComplete,
-  onUncomplete,
-  completed,
-  dueDate = null,
-  isTimeSpecific = false,
-}) {
+export default function Task({ id, title, onComplete, onUncomplete, completed, dueDate, dueTime }) {
   return (
     <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", width: "100%" }}>
       <IconButton onClick={completed ? () => onUncomplete(id) : () => onComplete(id)}>
@@ -36,19 +28,17 @@ export default function Task({
           {title}
         </Typography>
 
-        {dueDate !== null && (
+        {dueDate !== "" && (
           <Typography
             variant="caption"
             color={
-              (!isTimeSpecific && dueDate.hasSame(DateTime.now(), "day")) ||
-              dueDate >= DateTime.now()
+              (dueTime === "" && DateTime.fromISO(dueDate).hasSame(DateTime.now(), "day")) ||
+              DateTime.fromISO(dueDate + "T" + dueTime) >= DateTime.now()
                 ? "black"
                 : "red"
             }
           >
-            {isTimeSpecific
-              ? "Due: " + dueDate.toLocaleString(DateTime.DATETIME_SHORT)
-              : "Due: " + dueDate.toLocaleString(DateTime.DATE_SHORT)}
+            Due: {dueDate} {dueTime !== "" && "at " + dueTime}
           </Typography>
         )}
       </Box>
