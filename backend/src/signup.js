@@ -1,16 +1,33 @@
-const db = require("better-sqlite3")("./dev.db");
+const pg = require("pg");
+const { Client } = pg;
+const DATABASE_URL =
+  process.env.DATABASE_URL || "postgres://nocrastinator:nocrastinator@localhost:5432/nocrastinator";
 
 const signup = async (data) => {
   if (!data.firstName && !data.lastName && !data.email && !data.password) {
-    throw new Error("Invalid Form!");
+    return "Invalid Form!";
   }
-  const check = db.prepare("SELECT * FROM accounts WHERE email=?").get(data.email);
-  if (!check) {
-    db.prepare(
-      "INSERT INTO accounts (first_name, last_name, email, password) VALUES (?, ?, ?, ?)"
-    ).run(data.firstName, data.lastName, data.email, data.password);
-  } else {
-    throw new Error("Account already exists!");
+  const client = new Client({
+    connectionString: DATABASE_URL,
+  });
+
+  await client.connect();
+  try {
+    const check = await client.query("SELECT * FROM accounts WHERE email=$1", [data.email]);
+    if (!check.rows[0]) {
+      await client.query(
+        "INSERT INTO accounts (first_name, last_name, email, password) VALUES ($1, $2, $3, $4)",
+        [data.firstName, data.lastName, data.email, data.password]
+      );
+      return "Sign Up successful!";
+    } else {
+      return "Account already exists!";
+    }
+  } catch (err) {
+    console.log(err);
+    return "Error! Please try again later.";
+  } finally {
+    await client.end();
   }
 };
 
