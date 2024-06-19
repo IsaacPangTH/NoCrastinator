@@ -13,14 +13,36 @@ import ChecklistIcon from "@mui/icons-material/Checklist";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
 import LeaderboardOutlinedIcon from "@mui/icons-material/LeaderboardOutlined";
+import { useNavigate } from "react-router-dom";
 
 const drawerWidth = 100;
-const icons = [
-  <ChecklistIcon color="primary" />,
-  <CalendarMonthOutlinedIcon color="primary" />,
-  <GroupOutlinedIcon color="primary" />,
-  <LeaderboardOutlinedIcon color="primary" />,
-];
+
+function NavbarButton({ icon, text, link }) {
+  const navigate = useNavigate();
+  const handleClick = () => navigate(link);
+  return (
+    <ListItem key={text} disablePadding>
+      <ListItemButton onClick={handleClick}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignContent: "center",
+            alignItems: "center",
+            justifyContent: "center",
+            width: drawerWidth,
+          }}
+        >
+          {icon}
+          <ListItemText
+            primary={text}
+            primaryTypographyProps={{ variant: "caption", color: "#606060" }}
+          />
+        </Box>
+      </ListItemButton>
+    </ListItem>
+  );
+}
 
 export default function NavBar({ children, p = 3 }) {
   return (
@@ -39,31 +61,31 @@ export default function NavBar({ children, p = 3 }) {
           width: drawerWidth,
           flexShrink: 0,
           [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: "border-box" },
-        }}>
+        }}
+      >
         <Toolbar />
         <Box sx={{ overflow: "auto" }}>
           <List>
-            {["Task List", "Calendar", "Friends", "Leaderboard"].map((text, index) => (
-              <ListItem key={text} disablePadding>
-                <ListItemButton>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignContent: "center",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: drawerWidth,
-                    }}>
-                    {icons[index]}
-                    <ListItemText
-                      primary={text}
-                      primaryTypographyProps={{ variant: "caption", color: "#606060" }}
-                    />
-                  </Box>
-                </ListItemButton>
-              </ListItem>
-            ))}
+            <NavbarButton
+              icon={<ChecklistIcon color="primary" />}
+              text="Task List"
+              link="../tasklist"
+            />
+            <NavbarButton
+              icon={<CalendarMonthOutlinedIcon color="primary" />}
+              text="Calendar"
+              link="../calendar"
+            />
+            <NavbarButton
+              icon={<GroupOutlinedIcon color="primary" />}
+              text="Friends List"
+              link="../friends"
+            />
+            <NavbarButton
+              icon={<LeaderboardOutlinedIcon color="primary" />}
+              text="Leaderboard"
+              link="../leaderboard"
+            />
           </List>
         </Box>
       </Drawer>
