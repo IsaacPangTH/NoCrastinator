@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import Task from "./Task";
 import { DateTime } from "luxon";
 import {
@@ -22,10 +24,45 @@ import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+
 export default function Tasks() {
   const [tasks, setTasks] = useState([]);
   const [addTaskDialogOpen, setAddTaskDialogOpen] = useState(false);
   const [newTaskDueDateSelected, setNewTaskDueDateSelected] = useState(false);
+  const alertShownRef = useRef(false);
+  const navigate = useNavigate();
+
+  const handleComplete = async (id) => {
+    try {
+      const obj = { id: id };
+      const response = await axios.patch(`${BACKEND_URL}/tasks`, obj, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    } catch (error) {
+      alert("Backend is down! Please try again later.");
+    }
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const form = new FormData(event.currentTarget);
+      const formJson = Object.fromEntries(form.entries());
+      formJson.user = sessionStorage.getItem("user");
+      formJson.isCompleted = false;
+      const response = await axios.post(`${BACKEND_URL}/tasks`, formJson, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    } catch (error) {
+      alert("Backend is down! Please try again later.");
+    }
+    handleCloseAddTask();
+  };
 
   const handleAddTask = () => {
     setAddTaskDialogOpen(true);
@@ -35,22 +72,30 @@ export default function Tasks() {
     setAddTaskDialogOpen(false);
     setNewTaskDueDateSelected(false);
   };
-  const handleComplete = (id) => {
-    setTasks(
-      tasks.map((task) => {
-        task.isCompleted = task.id === id ? true : task.isCompleted;
-        return task;
-      })
-    );
-  };
-  const handleUncomplete = (id) => {
-    setTasks(
-      tasks.map((task) => {
-        task.isCompleted = task.id === id ? false : task.isCompleted;
-        return task;
-      })
-    );
-  };
+
+  useEffect(() => {
+    if (!alertShownRef.current) {
+      if (!sessionStorage.getItem("user")) {
+        alert("Please Login!");
+        alertShownRef.current = true;
+        return navigate("/login");
+      }
+    }
+    const fetchData = async () => {
+      const response = await axios.post(
+        `${BACKEND_URL}/readtask`,
+        { user: sessionStorage.getItem("user") },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setTasks(response.data);
+    };
+
+    fetchData();
+  }, [addTaskDialogOpen, handleComplete]);
 
   return (
     <>
@@ -75,24 +120,7 @@ export default function Tasks() {
         onClose={handleCloseAddTask}
         PaperProps={{
           component: "form",
-          onSubmit: (event) => {
-            event.preventDefault();
-            const formData = new FormData(event.currentTarget);
-            const formJson = Object.fromEntries(formData.entries());
-            const title = formJson.title;
-            const dueDate = formJson.dueDate;
-            let dueTime = formJson.dueTime;
-            const tasksCopy = tasks;
-            tasksCopy.push({
-              id: DateTime.now(),
-              title: title,
-              isCompleted: false,
-              dueDate: dueDate,
-              dueTime: dueTime,
-            });
-            setTasks(tasksCopy);
-            handleCloseAddTask();
-          },
+          onSubmit: handleSubmit,
         }}
       >
         <DialogTitle>Add Task</DialogTitle>
@@ -149,15 +177,13 @@ export default function Tasks() {
   function getToDo(tasks) {
     return tasks
       .filter((task) => !task.isCompleted)
-      .toSorted(taskDueDateComparator)
       .map((task) => (
-        <>
+        <React.Fragment key={task.id}>
           <ListItem key={task.id} sx={{ width: "100%" }}>
             <Task
               id={task.id}
               title={task.title}
-              onComplete={handleComplete}
-              onUncomplete={handleUncomplete}
+              handleComplete={handleComplete}
               completed={task.isCompleted}
               dueDate={task.dueDate}
               dueTime={task.dueTime}
@@ -165,7 +191,7 @@ export default function Tasks() {
             />
           </ListItem>
           <Divider />
-        </>
+        </React.Fragment>
       ));
   }
 
@@ -173,39 +199,17 @@ export default function Tasks() {
     return tasks
       .filter((task) => task.isCompleted)
       .map((task) => (
-        <>
+        <React.Fragment key={task.id}>
           <ListItem key={task.id}>
             <Task
               id={task.id}
               title={task.title}
-              onComplete={handleComplete}
-              onUncomplete={handleUncomplete}
+              handleComplete={handleComplete}
               completed={task.isCompleted}
             />
           </ListItem>
           <Divider />
-        </>
+        </React.Fragment>
       ));
-  }
-
-  function taskDueDateComparator(task1, task2) {
-    if (task1.dueDate === "") {
-      return 1;
-    }
-    if (task2.dueDate === "") {
-      return -1;
-    }
-
-    if (task1.dueDate === task2.dueDate) {
-      if (task1.dueTime === "") {
-        return 1;
-      }
-      if (task2.dueTime === "") {
-        return -1;
-      }
-      return DateTime.fromISO(task1.dueTime).diff(DateTime.fromISO(task2.dueTime));
-    }
-
-    return DateTime.fromISO(task1.dueDate).diff(DateTime.fromISO(task2.dueDate));
   }
 }

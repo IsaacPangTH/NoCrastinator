@@ -21,7 +21,11 @@ const login = async (data) => {
       if (!check.rows[0]) {
         return "Wrong password!";
       }
-      return { message: "Login successful!", name: check.rows[0].first_name };
+      return {
+        message: "Login successful!",
+        name: check.rows[0].first_name,
+        user: check.rows[0].id,
+      };
     } else {
       return "Email is not registered!";
     }
