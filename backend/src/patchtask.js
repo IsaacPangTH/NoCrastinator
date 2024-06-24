@@ -4,7 +4,6 @@ const DATABASE_URL =
   process.env.DATABASE_URL || "postgres://nocrastinator:nocrastinator@localhost:5432/nocrastinator";
 
 const patchtask = async (form) => {
-  console.log(form);
   if (!form.id) {
     return "Invalid Task!";
   }
