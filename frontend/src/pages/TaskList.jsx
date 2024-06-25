@@ -9,7 +9,7 @@ export default function TaskList() {
 
   useEffect(() => {
     if (!alertShownRef.current) {
-      if (!sessionStorage.getItem("user")) {
+      if (!sessionStorage.getItem("name")) {
         alert("Please Login!");
         alertShownRef.current = true;
         return navigate("/login");
@@ -19,7 +19,7 @@ export default function TaskList() {
 
   return (
     <NavBar p={3}>
-      <h1>Welcome {sessionStorage.getItem("user")}!</h1>
+      <h1>Welcome {sessionStorage.getItem("name")}!</h1>
       <h1>Task List</h1>
       <Tasks />
     </NavBar>

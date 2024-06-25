@@ -13,6 +13,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const defaultTheme = createTheme();
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -20,15 +21,15 @@ export default function SignIn() {
     event.preventDefault();
     try {
       const form = event.currentTarget;
-      const response = await axios.post("http://localhost:3000/login", form, {
+      const response = await axios.post(`${BACKEND_URL}/login`, form, {
         headers: {
           "Content-Type": "application/json",
         },
       });
-      console.log(response.data);
       alert(response.data.message);
       if (response.data.message == "Login successful!") {
-        sessionStorage.setItem("user", response.data.name);
+        sessionStorage.setItem("user", response.data.user);
+        sessionStorage.setItem("name", response.data.name);
         return navigate("/tasklist");
       }
     } catch (err) {
@@ -46,7 +47,8 @@ export default function SignIn() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-          }}>
+          }}
+        >
           <img src={NoCrastinatorLogo} className="logoBig" />
           <Typography component="h1" variant="h5">
             Sign in

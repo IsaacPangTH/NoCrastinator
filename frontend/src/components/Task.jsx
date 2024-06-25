@@ -6,18 +6,10 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { DateTime } from "luxon";
 
-export default function Task({
-  id,
-  title,
-  onComplete,
-  onUncomplete,
-  completed,
-  dueDate = "",
-  dueTime = "",
-}) {
+export default function Task({ id, title, handleComplete, completed, dueDate = "", dueTime = "" }) {
   return (
     <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", width: "100%" }}>
-      <IconButton onClick={completed ? () => onUncomplete(id) : () => onComplete(id)}>
+      <IconButton onClick={() => handleComplete(id)}>
         {completed ? <CheckCircleIcon /> : <CircleOutlinedIcon />}
       </IconButton>
       <Box

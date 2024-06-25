@@ -15,13 +15,15 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const defaultTheme = createTheme();
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+
 
 export default function SignUp() {
   const navigate = useNavigate();
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3000/signup", event.currentTarget, {
+      const response = await axios.post(`${BACKEND_URL}/signup`, event.currentTarget, {
         headers: {
           "Content-Type": "application/json",
         },
