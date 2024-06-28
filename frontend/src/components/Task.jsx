@@ -10,13 +10,13 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
-import { DateTime } from "luxon";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { LocalizationProvider, MobileDateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
-import { formatISO } from "date-fns";
+import { formatISO, parseISO, isBefore, endOfToday } from "date-fns";
+import { red } from "@mui/material/colors";
 
 export default function Task({
   id,
@@ -71,10 +71,13 @@ export default function Task({
             <Typography
               variant="caption"
               color={
-                (dueTime === "" && DateTime.fromISO(dueDate).hasSame(DateTime.now(), "day")) ||
-                DateTime.fromISO(dueDate + "T" + dueTime) >= DateTime.now()
+                isBefore(parseISO(dueDate), new Date())
+                  ? "red"
+                  : dueTime !== ""
                   ? "black"
-                  : "red"
+                  : isBefore(parseISO(dueDate), endOfToday())
+                  ? "red"
+                  : "black"
               }
             >
               Due: {dueDate} {dueTime !== "" && "at " + dueTime}
