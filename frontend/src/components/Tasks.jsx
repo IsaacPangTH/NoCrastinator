@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Task from "./Task";
-import { DateTime } from "luxon";
 import {
   Button,
   Dialog,
@@ -20,12 +19,9 @@ import {
 } from "@mui/material";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
-import { MobileDateTimePicker } from "@mui/x-date-pickers/MobileDateTimePicker";
-import { formatISO } from "date-fns";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
@@ -33,9 +29,7 @@ export default function Tasks() {
   const [tasks, setTasks] = useState([]);
   const [addTaskDialogOpen, setAddTaskDialogOpen] = useState(false);
   const [newTaskDueDateSelected, setNewTaskDueDateSelected] = useState(false);
-  const [scheduleTaskDialogOpen, setScheduleTaskDialogOpen] = useState(false);
-  const [taskStartDateTime, setTaskStartDateTime] = useState(null);
-  const [taskEndDateTime, setTaskEndDateTime] = useState(null);
+
   const alertShownRef = useRef(false);
   const navigate = useNavigate();
 
@@ -77,13 +71,6 @@ export default function Tasks() {
   const handleCloseAddTask = () => {
     setAddTaskDialogOpen(false);
     setNewTaskDueDateSelected(false);
-  };
-
-  const handleSchedule = () => setScheduleTaskDialogOpen(true);
-  const handleCloseScheduleDialog = () => {
-    setTaskStartDateTime(null);
-    setTaskEndDateTime(null);
-    setScheduleTaskDialogOpen(false);
   };
 
   useEffect(() => {
@@ -184,61 +171,6 @@ export default function Tasks() {
           <Button type="submit">Add Task</Button>
         </DialogActions>
       </Dialog>
-      <Dialog
-        open={scheduleTaskDialogOpen}
-        onClose={handleCloseScheduleDialog}
-        PaperProps={{
-          component: "form",
-          onSubmit: (event) => {
-            event.preventDefault();
-            if (taskStartDateTime !== null && taskEndDateTime !== null) {
-              const startDateTime = formatISO(taskStartDateTime);
-              const endDateTime = formatISO(taskEndDateTime);
-              handleCloseScheduleDialog();
-            }
-          },
-        }}
-      >
-        <DialogTitle>Schedule Task</DialogTitle>
-        <DialogContent>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <Stack spacing={3}>
-              <MobileDateTimePicker
-                required
-                label="Start"
-                id="startDateTime"
-                name="startDateTime"
-                slotProps={{
-                  textField: {
-                    required: true,
-                  },
-                }}
-                orientation="landscape"
-                value={taskStartDateTime}
-                onChange={(newValue) => setTaskStartDateTime(newValue)}
-              />
-              <MobileDateTimePicker
-                required
-                label="End"
-                id="endDateTime"
-                name="endDateTime"
-                slotProps={{
-                  textField: {
-                    required: true,
-                  },
-                }}
-                orientation="landscape"
-                value={taskEndDateTime}
-                onChange={(newValue) => setTaskEndDateTime(newValue)}
-              />
-            </Stack>
-          </LocalizationProvider>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseScheduleDialog}>Cancel</Button>
-          <Button type="submit">OK</Button>
-        </DialogActions>
-      </Dialog>
     </>
   );
 
@@ -256,7 +188,6 @@ export default function Tasks() {
               dueDate={task.dueDate}
               dueTime={task.dueTime}
               className="task"
-              handleSchedule={handleSchedule}
             />
           </ListItem>
           <Divider />
