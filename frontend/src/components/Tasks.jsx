@@ -23,6 +23,7 @@ import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
+import { MobileDateTimePicker } from "@mui/x-date-pickers/MobileDateTimePicker";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
@@ -30,6 +31,7 @@ export default function Tasks() {
   const [tasks, setTasks] = useState([]);
   const [addTaskDialogOpen, setAddTaskDialogOpen] = useState(false);
   const [newTaskDueDateSelected, setNewTaskDueDateSelected] = useState(false);
+  const [scheduleTaskDialogOpen, setScheduleTaskDialogOpen] = useState(false);
   const alertShownRef = useRef(false);
   const navigate = useNavigate();
 
@@ -72,6 +74,9 @@ export default function Tasks() {
     setAddTaskDialogOpen(false);
     setNewTaskDueDateSelected(false);
   };
+
+  const handleSchedule = () => setScheduleTaskDialogOpen(true);
+  const handleCloseScheduleDialog = () => setScheduleTaskDialogOpen(false);
 
   useEffect(() => {
     if (!alertShownRef.current) {
@@ -171,6 +176,55 @@ export default function Tasks() {
           <Button type="submit">Add Task</Button>
         </DialogActions>
       </Dialog>
+      <Dialog
+        open={scheduleTaskDialogOpen}
+        onClose={handleCloseScheduleDialog}
+        PaperProps={{
+          component: "form",
+          onSubmit: (event) => {
+            event.preventDefault();
+            const formData = new FormData(event.currentTarget);
+            const formJson = Object.fromEntries(formData.entries());
+            handleCloseScheduleDialog();
+          },
+        }}
+      >
+        <DialogTitle>Schedule Task</DialogTitle>
+        <DialogContent>
+          <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale={navigator.language}>
+            <Stack spacing={3}>
+              <MobileDateTimePicker
+                required
+                label="Start"
+                id="startDateTime"
+                name="startDateTime"
+                slotProps={{
+                  field: {
+                    required: true,
+                  },
+                }}
+                orientation="landscape"
+              />
+              <MobileDateTimePicker
+                required
+                label="End"
+                id="endDateTime"
+                name="endDateTime"
+                slotProps={{
+                  field: {
+                    required: true,
+                  },
+                }}
+                orientation="landscape"
+              />
+            </Stack>
+          </LocalizationProvider>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseScheduleDialog}>Cancel</Button>
+          <Button type="submit">OK</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 
@@ -188,6 +242,7 @@ export default function Tasks() {
               dueDate={task.dueDate}
               dueTime={task.dueTime}
               className="task"
+              handleSchedule={handleSchedule}
             />
           </ListItem>
           <Divider />
