@@ -20,10 +20,12 @@ import {
 } from "@mui/material";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 import { MobileDateTimePicker } from "@mui/x-date-pickers/MobileDateTimePicker";
+import { formatISO } from "date-fns";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
@@ -32,6 +34,8 @@ export default function Tasks() {
   const [addTaskDialogOpen, setAddTaskDialogOpen] = useState(false);
   const [newTaskDueDateSelected, setNewTaskDueDateSelected] = useState(false);
   const [scheduleTaskDialogOpen, setScheduleTaskDialogOpen] = useState(false);
+  const [taskStartDateTime, setTaskStartDateTime] = useState(null);
+  const [taskEndDateTime, setTaskEndDateTime] = useState(null);
   const alertShownRef = useRef(false);
   const navigate = useNavigate();
 
@@ -76,7 +80,11 @@ export default function Tasks() {
   };
 
   const handleSchedule = () => setScheduleTaskDialogOpen(true);
-  const handleCloseScheduleDialog = () => setScheduleTaskDialogOpen(false);
+  const handleCloseScheduleDialog = () => {
+    setTaskStartDateTime(null);
+    setTaskEndDateTime(null);
+    setScheduleTaskDialogOpen(false);
+  };
 
   useEffect(() => {
     if (!alertShownRef.current) {
@@ -183,15 +191,17 @@ export default function Tasks() {
           component: "form",
           onSubmit: (event) => {
             event.preventDefault();
-            const formData = new FormData(event.currentTarget);
-            const formJson = Object.fromEntries(formData.entries());
-            handleCloseScheduleDialog();
+            if (taskStartDateTime !== null && taskEndDateTime !== null) {
+              const startDateTime = formatISO(taskStartDateTime);
+              const endDateTime = formatISO(taskEndDateTime);
+              handleCloseScheduleDialog();
+            }
           },
         }}
       >
         <DialogTitle>Schedule Task</DialogTitle>
         <DialogContent>
-          <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale={navigator.language}>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
             <Stack spacing={3}>
               <MobileDateTimePicker
                 required
@@ -199,11 +209,13 @@ export default function Tasks() {
                 id="startDateTime"
                 name="startDateTime"
                 slotProps={{
-                  field: {
+                  textField: {
                     required: true,
                   },
                 }}
                 orientation="landscape"
+                value={taskStartDateTime}
+                onChange={(newValue) => setTaskStartDateTime(newValue)}
               />
               <MobileDateTimePicker
                 required
@@ -211,11 +223,13 @@ export default function Tasks() {
                 id="endDateTime"
                 name="endDateTime"
                 slotProps={{
-                  field: {
+                  textField: {
                     required: true,
                   },
                 }}
                 orientation="landscape"
+                value={taskEndDateTime}
+                onChange={(newValue) => setTaskEndDateTime(newValue)}
               />
             </Stack>
           </LocalizationProvider>
