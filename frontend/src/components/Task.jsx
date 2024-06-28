@@ -18,7 +18,16 @@ import { LocalizationProvider, MobileDateTimePicker } from "@mui/x-date-pickers"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { formatISO } from "date-fns";
 
-export default function Task({ id, title, handleComplete, completed, dueDate = "", dueTime = "" }) {
+export default function Task({
+  id,
+  title,
+  handleComplete,
+  completed,
+  dueDate = "",
+  dueTime = "",
+  startTime = null,
+  endTime = null,
+}) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [scheduleTaskDialogOpen, setScheduleTaskDialogOpen] = useState(false);
   const [taskStartDateTime, setTaskStartDateTime] = useState(null);
@@ -132,6 +141,7 @@ export default function Task({ id, title, handleComplete, completed, dueDate = "
                   },
                 }}
                 orientation="landscape"
+                defaultValue={startTime}
                 value={taskStartDateTime}
                 onChange={(newValue) => setTaskStartDateTime(newValue)}
               />
@@ -146,6 +156,7 @@ export default function Task({ id, title, handleComplete, completed, dueDate = "
                   },
                 }}
                 orientation="landscape"
+                defaultValue={endTime}
                 value={taskEndDateTime}
                 onChange={(newValue) => setTaskEndDateTime(newValue)}
               />
