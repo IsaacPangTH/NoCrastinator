@@ -1,6 +1,16 @@
+.logoMid {
+  width: 35%;
+  height: 35%;
+}
+
 .logoBig {
   width: 50%;
   height: 50%;
+}
+
+.logoSmall {
+  width: 3%;
+  height: 3%;
 }
 
 .task {

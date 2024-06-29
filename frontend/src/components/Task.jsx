@@ -132,6 +132,8 @@ export default function Task({
               if (isBefore(taskStartDateTime, taskEndDateTime)) {
                 const startDateTime = formatISO(taskStartDateTime);
                 const endDateTime = formatISO(taskEndDateTime);
+                console.log("startString: " + taskStartDateTime + " endString: " + taskEndDateTime);
+                console.log("startDate: " + startDateTime + " endDate: " + endDateTime);
                 handleCloseScheduleDialog();
               } else {
                 setOpenInvalidStartEndTime(true);

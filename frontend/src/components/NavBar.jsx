@@ -14,6 +14,8 @@ import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined
 import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
 import LeaderboardOutlinedIcon from "@mui/icons-material/LeaderboardOutlined";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@mui/material";
+import NoCrastinatorLogoWhite from "../assets/NoCrastinatorWhite.png";
 
 const drawerWidth = 100;
 
@@ -50,9 +52,25 @@ export default function NavBar({ children, p = 3 }) {
       <CssBaseline />
       <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar>
-          <Typography variant="h6" noWrap component="div">
-            NoCrastinator
-          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              width: "100%",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Box gap={2} sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+              <img src={NoCrastinatorLogoWhite} className="logoSmall" />
+              <Typography variant="h6" noWrap component="div">
+                NoCrastinator
+              </Typography>
+            </Box>
+            <Button variant="outlined" color="white">
+              Logout
+            </Button>
+          </Box>
         </Toolbar>
       </AppBar>
       <Drawer
