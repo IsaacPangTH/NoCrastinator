@@ -15,8 +15,8 @@ import MenuItem from "@mui/material/MenuItem";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { LocalizationProvider, MobileDateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
-import { formatISO, parseISO, isBefore, endOfToday } from "date-fns";
-import { red } from "@mui/material/colors";
+import { formatISO, parseISO, isBefore, startOfToday, format } from "date-fns";
+import { Snackbar } from "@mui/material";
 
 export default function Task({
   id,
@@ -32,6 +32,7 @@ export default function Task({
   const [scheduleTaskDialogOpen, setScheduleTaskDialogOpen] = useState(false);
   const [taskStartDateTime, setTaskStartDateTime] = useState(null);
   const [taskEndDateTime, setTaskEndDateTime] = useState(null);
+  const [openInvalidStartEndTime, setOpenInvalidStartEndTime] = useState(false);
   const open = Boolean(anchorEl);
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -71,11 +72,11 @@ export default function Task({
             <Typography
               variant="caption"
               color={
-                isBefore(parseISO(dueDate), new Date())
+                isBefore(parseISO(dueDate), startOfToday())
                   ? "red"
-                  : dueTime !== ""
+                  : dueTime === ""
                   ? "black"
-                  : isBefore(parseISO(dueDate), endOfToday())
+                  : isBefore(parseISO(dueDate + "T" + dueTime), new Date())
                   ? "red"
                   : "black"
               }
@@ -84,6 +85,12 @@ export default function Task({
             </Typography>
           )}
         </Box>
+        {startTime !== null && endTime !== null && (
+          <Typography variant="subtitle2">
+            Scheduled from {format(startTime, "yyyy-MM-dd HH:mm")} to
+            {" " + format(endTime, "yyyy-MM-dd HH:mm")}
+          </Typography>
+        )}
         <IconButton
           id={"menu-button-" + id}
           aria-controls={open ? "task-menu" : undefined}
@@ -122,9 +129,15 @@ export default function Task({
           onSubmit: (event) => {
             event.preventDefault();
             if (taskStartDateTime !== null && taskEndDateTime !== null) {
-              const startDateTime = formatISO(taskStartDateTime);
-              const endDateTime = formatISO(taskEndDateTime);
-              handleCloseScheduleDialog();
+              if (isBefore(taskStartDateTime, taskEndDateTime)) {
+                const startDateTime = formatISO(taskStartDateTime);
+                const endDateTime = formatISO(taskEndDateTime);
+                handleCloseScheduleDialog();
+              } else {
+                setOpenInvalidStartEndTime(true);
+              }
+            } else {
+              setOpenInvalidStartEndTime(true);
             }
           },
         }}
@@ -147,6 +160,7 @@ export default function Task({
                 defaultValue={startTime}
                 value={taskStartDateTime}
                 onChange={(newValue) => setTaskStartDateTime(newValue)}
+                format="yyyy-MM-dd HH:mm"
               />
               <MobileDateTimePicker
                 required
@@ -162,6 +176,7 @@ export default function Task({
                 defaultValue={endTime}
                 value={taskEndDateTime}
                 onChange={(newValue) => setTaskEndDateTime(newValue)}
+                format="yyyy-MM-dd HH:mm"
               />
             </Stack>
           </LocalizationProvider>
@@ -171,6 +186,12 @@ export default function Task({
           <Button type="submit">OK</Button>
         </DialogActions>
       </Dialog>
+      <Snackbar
+        open={openInvalidStartEndTime}
+        autoHideDuration={5000}
+        onClose={() => setOpenInvalidStartEndTime(false)}
+        message="Set valid start and end times"
+      />
     </>
   );
 }
