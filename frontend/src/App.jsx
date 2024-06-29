@@ -7,6 +7,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import TaskList from "./pages/TaskList";
 import CalendarPage from "./pages/CalendarPage";
 import FriendsList from "./pages/FriendsList";
+import LeaderboardPage from "./pages/LeaderboardPage";
 import Home from "./pages/Home";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 function App() {
@@ -29,6 +30,7 @@ function App() {
           <Route path="/tasklist" element={<TaskList />} />
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/friends" element={<FriendsList />} />
+          <Route path="/leaderboard" element={<LeaderboardPage />} />
           <Route path="/" element={<Home />} />
         </Routes>
       </BrowserRouter>
