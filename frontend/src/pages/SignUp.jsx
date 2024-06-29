@@ -17,7 +17,6 @@ import { useNavigate } from "react-router-dom";
 const defaultTheme = createTheme();
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
-
 export default function SignUp() {
   const navigate = useNavigate();
   const handleSubmit = async (event) => {
@@ -47,7 +46,8 @@ export default function SignUp() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-          }}>
+          }}
+        >
           <img src={NoCrastinatorLogo} className="logoBig" />
           <Typography component="h1" variant="h5">
             Sign up
