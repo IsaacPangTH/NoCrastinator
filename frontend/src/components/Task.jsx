@@ -16,12 +16,22 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { LocalizationProvider, MobileDateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { formatISO, parseISO, isBefore, startOfToday, format } from "date-fns";
-import { Snackbar } from "@mui/material";
+import { Snackbar, TextField } from "@mui/material";
+import { TimePicker } from "@mui/x-date-pickers";
+import { DateTime } from "luxon";
+import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
+
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
 export default function Task({
   id,
   title,
   handleComplete,
+  handleEdit,
+  handleAddSchedule,
+  handleDelete,
   completed,
   dueDate = "",
   dueTime = "",
@@ -33,6 +43,9 @@ export default function Task({
   const [taskStartDateTime, setTaskStartDateTime] = useState(null);
   const [taskEndDateTime, setTaskEndDateTime] = useState(null);
   const [openInvalidStartEndTime, setOpenInvalidStartEndTime] = useState(false);
+  const [editTaskDialogOpen, setEditTaskDialogOpen] = useState(false);
+  const [editTaskDueDateSelected, setEditTaskDueDateSelected] = useState(false);
+
   const open = Boolean(anchorEl);
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -40,7 +53,18 @@ export default function Task({
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+
+  const handleEditTask = () => {
+    setEditTaskDialogOpen(true);
+    setEditTaskDueDateSelected(dueTime == "" ? false : true);
+  };
+  const handleCloseEditTask = () => {
+    setEditTaskDialogOpen(false);
+    setEditTaskDueDateSelected(false);
+  };
+
   const handleSchedule = () => setScheduleTaskDialogOpen(true);
+
   const handleCloseScheduleDialog = () => {
     setTaskStartDateTime(null);
     setTaskEndDateTime(null);
@@ -48,6 +72,70 @@ export default function Task({
   };
   return (
     <>
+      <Dialog
+        open={editTaskDialogOpen}
+        onClose={handleCloseEditTask}
+        PaperProps={{
+          component: "form",
+          onSubmit: (event) => {
+            event.preventDefault();
+            handleCloseEditTask();
+            handleEdit(event);
+          },
+        }}
+      >
+        <DialogTitle>Edit Task</DialogTitle>
+        <DialogContent>
+          <Stack spacing={3}>
+            <input type="hidden" name="id" value={id} />
+            <TextField
+              autoFocus
+              autoComplete="off"
+              required
+              margin="dense"
+              defaultValue={title}
+              id="title"
+              name="title"
+              label="Task"
+              type="text"
+              fullWidth
+              variant="standard"
+            />
+            <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale={navigator.language}>
+              <DatePicker
+                label="Due Date (optional)"
+                defaultValue={dueDate == "" ? null : DateTime.fromISO(dueDate)}
+                id="dueDate"
+                name="dueDate"
+                slotProps={{
+                  field: { clearable: true, onClear: () => setEditTaskDueDateSelected(false) },
+                }}
+                format="yyyy-LL-dd"
+                onChange={() => setEditTaskDueDateSelected(true)}
+              />
+              {editTaskDueDateSelected && (
+                <TimePicker
+                  label="Time Due (optional)"
+                  defaultValue={dueTime == "" ? null : DateTime.fromISO(dueTime)}
+                  id="dueTime"
+                  name="dueTime"
+                  viewRenderers={{
+                    hours: renderTimeViewClock,
+                    minutes: renderTimeViewClock,
+                    seconds: renderTimeViewClock,
+                  }}
+                  slotProps={{ field: { clearable: true } }}
+                  format="HH:mm"
+                />
+              )}
+            </LocalizationProvider>
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseEditTask}>Cancel</Button>
+          <Button type="submit">Edit Task</Button>
+        </DialogActions>
+      </Dialog>
       <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", width: "100%" }}>
         <IconButton onClick={() => handleComplete(id)}>
           {completed ? <CheckCircleIcon /> : <CircleOutlinedIcon />}
@@ -117,8 +205,22 @@ export default function Task({
           >
             Schedule
           </MenuItem>
-          <MenuItem onClick={handleMenuClose}>Edit</MenuItem>
-          <MenuItem onClick={handleMenuClose}>Delete</MenuItem>
+          <MenuItem
+            onClick={() => {
+              handleEditTask();
+              handleMenuClose();
+            }}
+          >
+            Edit
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              handleDelete(id);
+              handleMenuClose();
+            }}
+          >
+            Delete
+          </MenuItem>
         </Menu>
       </Box>
       <Dialog
@@ -132,9 +234,8 @@ export default function Task({
               if (isBefore(taskStartDateTime, taskEndDateTime)) {
                 const startDateTime = formatISO(taskStartDateTime);
                 const endDateTime = formatISO(taskEndDateTime);
-                console.log("startString: " + taskStartDateTime + " endString: " + taskEndDateTime);
-                console.log("startDate: " + startDateTime + " endDate: " + endDateTime);
                 handleCloseScheduleDialog();
+                handleAddSchedule({ id: id, start_time: startDateTime, end_time: endDateTime });
               } else {
                 setOpenInvalidStartEndTime(true);
               }

@@ -4,7 +4,10 @@ const { signup } = require("./signup");
 const { login } = require("./login");
 const { addtask } = require("./addtask");
 const { readtask } = require("./readtask");
-const { patchtask } = require("./patchtask");
+const { patchcompleted } = require("./patchcompleted");
+const { edittask } = require("./edittask");
+const { deletetask } = require("./deletetask");
+const { schedule } = require("./schedule");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -38,7 +41,23 @@ app.post("/tasks", async (req, res) => {
 });
 
 app.patch("/tasks", async (req, res) => {
-  const response = await patchtask(req.body);
+  console.log(req.body)
+  const response = await edittask(req.body);
+  res.json(response);
+});
+
+app.delete("/tasks", async (req, res) => {
+  const response = await deletetask(req.body.id);
+  res.json(response);
+});
+
+app.patch("/completed", async (req, res) => {
+  const response = await patchcompleted(req.body.id);
+  res.json(response);
+});
+
+app.patch("/schedule", async (req, res) => {
+  const response = await schedule(req.body);
   res.json(response);
 });
 

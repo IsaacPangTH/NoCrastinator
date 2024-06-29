@@ -30,18 +30,57 @@ export default function Tasks() {
   const [addTaskDialogOpen, setAddTaskDialogOpen] = useState(false);
   const [newTaskDueDateSelected, setNewTaskDueDateSelected] = useState(false);
 
-  const alertShownRef = useRef(false);
-  const navigate = useNavigate();
-
   const handleComplete = async (id) => {
     try {
       const obj = { id: id };
-      const response = await axios.patch(`${BACKEND_URL}/tasks`, obj, {
+      const response = await axios.patch(`${BACKEND_URL}/completed`, obj, {
         headers: {
           "Content-Type": "application/json",
         },
       });
     } catch (error) {
+      alert("Backend is down! Please try again later.");
+    }
+  };
+
+  const handleEdit = async (event) => {
+    try {
+      const form = new FormData(event.currentTarget);
+      const formJson = Object.fromEntries(form.entries());
+      const response = await axios.patch(`${BACKEND_URL}/tasks`, formJson, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      alert("Backend is down! Please try again later.");
+    }
+  };
+
+  const handleAddSchedule = async (obj) => {
+    try {
+      const response = await axios.patch(`${BACKEND_URL}/schedule`, obj, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      alert("Backend is down! Please try again later.");
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await axios.delete(`${BACKEND_URL}/tasks`, {
+        data: { id: id },
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    } catch (err) {
+      console.log(err);
       alert("Backend is down! Please try again later.");
     }
   };
@@ -74,13 +113,6 @@ export default function Tasks() {
   };
 
   useEffect(() => {
-    if (!alertShownRef.current) {
-      if (!sessionStorage.getItem("user")) {
-        alert("Please Login!");
-        alertShownRef.current = true;
-        return navigate("/login");
-      }
-    }
     const fetchData = async () => {
       const response = await axios.post(
         `${BACKEND_URL}/readtask`,
@@ -95,7 +127,7 @@ export default function Tasks() {
     };
 
     fetchData();
-  }, [addTaskDialogOpen, handleComplete]);
+  }, [addTaskDialogOpen, handleComplete, handleDelete, handleEdit, handleAddSchedule]);
 
   return (
     <>
@@ -184,6 +216,9 @@ export default function Tasks() {
               id={task.id}
               title={task.title}
               handleComplete={handleComplete}
+              handleEdit={handleEdit}
+              handleAddSchedule={handleAddSchedule}
+              handleDelete={handleDelete}
               completed={task.isCompleted}
               dueDate={task.dueDate}
               dueTime={task.dueTime}
@@ -205,6 +240,9 @@ export default function Tasks() {
               id={task.id}
               title={task.title}
               handleComplete={handleComplete}
+              handleEdit={handleEdit}
+              handleAddSchedule={handleAddSchedule}
+              handleDelete={handleDelete}
               completed={task.isCompleted}
             />
           </ListItem>

@@ -19,7 +19,7 @@ export default function CalendarPage() {
 
   return (
     <NavBar p={3}>
-      <h1>Welcome {sessionStorage.getItem("user")}!</h1>
+      <h1>Welcome {sessionStorage.getItem("name")}!</h1>
       <h1>Calendar</h1>
       <TaskCalendar />
     </NavBar>
