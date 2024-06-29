@@ -15,6 +15,7 @@ import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
 import LeaderboardOutlinedIcon from "@mui/icons-material/LeaderboardOutlined";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
+import NoCrastinatorLogoWhite from "../assets/NoCrastinatorWhite.png";
 
 const drawerWidth = 100;
 
@@ -60,9 +61,12 @@ export default function NavBar({ children, p = 3 }) {
               justifyContent: "space-between",
             }}
           >
-            <Typography variant="h6" noWrap component="div">
-              NoCrastinator
-            </Typography>
+            <Box gap={2} sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+              <img src={NoCrastinatorLogoWhite} className="logoSmall" />
+              <Typography variant="h6" noWrap component="div">
+                NoCrastinator
+              </Typography>
+            </Box>
             <Button variant="outlined" color="white">
               Logout
             </Button>
