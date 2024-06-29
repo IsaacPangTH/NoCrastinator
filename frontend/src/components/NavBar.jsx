@@ -14,6 +14,7 @@ import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined
 import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
 import LeaderboardOutlinedIcon from "@mui/icons-material/LeaderboardOutlined";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@mui/material";
 
 const drawerWidth = 100;
 
@@ -50,9 +51,22 @@ export default function NavBar({ children, p = 3 }) {
       <CssBaseline />
       <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar>
-          <Typography variant="h6" noWrap component="div">
-            NoCrastinator
-          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              width: "100%",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Typography variant="h6" noWrap component="div">
+              NoCrastinator
+            </Typography>
+            <Button variant="outlined" color="white">
+              Logout
+            </Button>
+          </Box>
         </Toolbar>
       </AppBar>
       <Drawer

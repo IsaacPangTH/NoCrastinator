@@ -1,4 +1,4 @@
-import React from "react";
+import { React, useState } from "react";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import format from "date-fns/format";
 import parse from "date-fns/parse";
@@ -19,6 +19,9 @@ const localizer = dateFnsLocalizer({
 });
 
 export default function TaskCalendar() {
+  const [tasks, setTasks] = useState([]);
+
+  const events = tasks.filter((task) => task.start !== null && task.end !== null);
   return (
     <>
       <Calendar localizer={localizer} />
