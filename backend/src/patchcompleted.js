@@ -3,8 +3,8 @@ const { Client } = pg;
 const DATABASE_URL =
   process.env.DATABASE_URL || "postgres://nocrastinator:nocrastinator@localhost:5432/nocrastinator";
 
-const patchtask = async (form) => {
-  if (!form.id) {
+const patchcompleted = async (id) => {
+  if (!id) {
     return "Invalid Task!";
   }
   const client = new Client({
@@ -12,10 +12,10 @@ const patchtask = async (form) => {
   });
   await client.connect();
   try {
-    await client.query("UPDATE tasks SET is_completed = NOT is_completed WHERE id=$1", [form.id]);
+    await client.query("UPDATE tasks SET is_completed = NOT is_completed WHERE id=$1", [id]);
+
     return "Success!";
   } catch (err) {
-    console.error(err);
     return "Error! Please try again later.";
   } finally {
     await client.end();
@@ -23,5 +23,5 @@ const patchtask = async (form) => {
 };
 
 module.exports = {
-  patchtask,
+  patchcompleted,
 };

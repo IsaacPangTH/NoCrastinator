@@ -8,12 +8,10 @@ export default function TaskList() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!alertShownRef.current) {
-      if (!sessionStorage.getItem("name")) {
-        alert("Please Login!");
-        alertShownRef.current = true;
-        return navigate("/login");
-      }
+    if (!alertShownRef.current && !sessionStorage.getItem("name")) {
+      alert("Please Login!");
+      alertShownRef.current = true;
+      return navigate("/login");
     }
   }, []);
 
