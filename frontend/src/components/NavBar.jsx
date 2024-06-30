@@ -84,8 +84,18 @@ export default function NavBar({ children, p = 3 }) {
                   NoCrastinator
                 </Typography>
               </Box>
-              <Button variant="outlined" onClick={handleMenuClick} color="white">
-                Account
+              <Button onClick={handleMenuClick} color="white">
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 2,
+                  }}
+                >
+                  <Avatar />
+                  {sessionStorage.getItem("name")}
+                </Box>
               </Button>
             </Box>
           </Toolbar>
@@ -114,12 +124,12 @@ export default function NavBar({ children, p = 3 }) {
               <NavbarButton
                 icon={<GroupOutlinedIcon color="primary" />}
                 text="Friends List"
-                //link="../friends"
+                link="../friends"
               />
               <NavbarButton
                 icon={<LeaderboardOutlinedIcon color="primary" />}
                 text="Leaderboard"
-                //link="../leaderboard"
+                link="../leaderboard"
               />
             </List>
           </Box>
@@ -136,6 +146,14 @@ export default function NavBar({ children, p = 3 }) {
         onClose={handleMenuClose}
         MenuListProps={{
           "aria-labelledby": "accountMenuButton",
+        }}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
         }}
       >
         <MenuItem
