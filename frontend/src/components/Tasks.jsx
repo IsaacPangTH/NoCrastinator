@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Task from "./Task";
+import DueDateTask from "./DueDateTask";
+import DueDateTimeTask from "./DueDateTimeTask";
 import {
   Button,
   Dialog,
@@ -140,7 +142,16 @@ export default function Tasks() {
     <>
       <h2>To-do</h2>
       <List>
-        {getToDo(tasks)}
+        {tasks
+          .filter((task) => !task.isCompleted)
+          .map((task) => (
+            <React.Fragment key={task.id}>
+              <ListItem key={task.id} sx={{ width: "100%" }}>
+                {makeTask(task)}
+              </ListItem>
+              <Divider />
+            </React.Fragment>
+          ))}
         <ListItem key="AddTask">
           <ListItemButton onClick={handleAddTask}>
             <ListItemIcon>
@@ -213,28 +224,47 @@ export default function Tasks() {
     </>
   );
 
-  function getToDo(tasks) {
-    return tasks
-      .filter((task) => !task.isCompleted)
-      .map((task) => (
-        <React.Fragment key={task.id}>
-          <ListItem key={task.id} sx={{ width: "100%" }}>
-            <Task
-              id={task.id}
-              title={task.title}
-              handleComplete={handleComplete}
-              handleEdit={handleEdit}
-              handleAddSchedule={handleAddSchedule}
-              handleDelete={handleDelete}
-              completed={task.isCompleted}
-              dueDate={task.dueDate}
-              dueTime={task.dueTime}
-              className="task"
-            />
-          </ListItem>
-          <Divider />
-        </React.Fragment>
-      ));
+  function makeTask(task) {
+    if (task.dueDate === undefined) {
+      return (
+        <Task
+          id={task.id}
+          title={task.title}
+          handleComplete={handleComplete}
+          handleEdit={handleEdit}
+          handleAddSchedule={handleAddSchedule}
+          handleDelete={handleDelete}
+          completed={task.isCompleted}
+        />
+      );
+    }
+    if (task.dueTime === undefined) {
+      return (
+        <DueDateTask
+          id={task.id}
+          title={task.title}
+          handleComplete={handleComplete}
+          handleEdit={handleEdit}
+          handleAddSchedule={handleAddSchedule}
+          handleDelete={handleDelete}
+          completed={task.isCompleted}
+          dueDate={task.dueDate}
+        />
+      );
+    }
+    return (
+      <DueDateTimeTask
+        id={task.id}
+        title={task.title}
+        handleComplete={handleComplete}
+        handleEdit={handleEdit}
+        handleAddSchedule={handleAddSchedule}
+        handleDelete={handleDelete}
+        completed={task.isCompleted}
+        dueDate={task.dueDate}
+        dueTime={task.dueTime}
+      />
+    );
   }
 
   function getCompleted(tasks) {

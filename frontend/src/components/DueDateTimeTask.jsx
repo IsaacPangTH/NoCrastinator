@@ -15,7 +15,7 @@ import MenuItem from "@mui/material/MenuItem";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { LocalizationProvider, MobileDateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
-import { formatISO, parseISO, isBefore, startOfToday, format } from "date-fns";
+import { formatISO, parseISO, isBefore, isFuture, format } from "date-fns";
 import { Snackbar, TextField } from "@mui/material";
 import { TimePicker } from "@mui/x-date-pickers";
 import { DateTime } from "luxon";
@@ -25,7 +25,7 @@ import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
-export default function Task({
+export default function DueDateTimeTask({
   id,
   title,
   handleComplete,
@@ -33,6 +33,8 @@ export default function Task({
   handleAddSchedule,
   handleDelete,
   completed,
+  dueDate = "",
+  dueTime = "",
   className = "task",
 }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -53,11 +55,11 @@ export default function Task({
 
   const handleEditTask = () => {
     setEditTaskDialogOpen(true);
-    setEditTaskDueDateSelected(false);
+    setEditTaskDueDateSelected(true);
   };
   const handleCloseEditTask = () => {
     setEditTaskDialogOpen(false);
-    setEditTaskDueDateSelected(false);
+    setEditTaskDueDateSelected(true);
   };
 
   const handleSchedule = () => setScheduleTaskDialogOpen(true);
@@ -101,6 +103,7 @@ export default function Task({
             <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale={navigator.language}>
               <DatePicker
                 label="Due Date (optional)"
+                defaultValue={DateTime.fromISO(dueDate)}
                 id="dueDate"
                 name="dueDate"
                 slotProps={{
@@ -112,6 +115,7 @@ export default function Task({
               {editTaskDueDateSelected && (
                 <TimePicker
                   label="Time Due (optional)"
+                  defaultValue={DateTime.fromISO(dueTime)}
                   id="dueTime"
                   name="dueTime"
                   viewRenderers={{
@@ -149,6 +153,10 @@ export default function Task({
             sx={completed ? { textDecoration: "line-through", color: "#818181" } : null}
           >
             {title}
+          </Typography>
+
+          <Typography variant="caption" color={isFuture(parseISO(dueDate)) ? "black" : "red"}>
+            Due: {dueDate + " at " + dueTime}
           </Typography>
         </Box>
 

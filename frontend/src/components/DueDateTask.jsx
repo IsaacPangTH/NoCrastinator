@@ -25,7 +25,7 @@ import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
-export default function Task({
+export default function DueDateTask({
   id,
   title,
   handleComplete,
@@ -33,6 +33,7 @@ export default function Task({
   handleAddSchedule,
   handleDelete,
   completed,
+  dueDate,
   className = "task",
 }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -41,7 +42,7 @@ export default function Task({
   const [taskEndDateTime, setTaskEndDateTime] = useState(null);
   const [openInvalidStartEndTime, setOpenInvalidStartEndTime] = useState(false);
   const [editTaskDialogOpen, setEditTaskDialogOpen] = useState(false);
-  const [editTaskDueDateSelected, setEditTaskDueDateSelected] = useState(false);
+  const [editTaskDueDateSelected, setEditTaskDueDateSelected] = useState(true);
 
   const open = Boolean(anchorEl);
   const handleMenuClick = (event) => {
@@ -53,11 +54,11 @@ export default function Task({
 
   const handleEditTask = () => {
     setEditTaskDialogOpen(true);
-    setEditTaskDueDateSelected(false);
+    setEditTaskDueDateSelected(true);
   };
   const handleCloseEditTask = () => {
     setEditTaskDialogOpen(false);
-    setEditTaskDueDateSelected(false);
+    setEditTaskDueDateSelected(true);
   };
 
   const handleSchedule = () => setScheduleTaskDialogOpen(true);
@@ -101,13 +102,13 @@ export default function Task({
             <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale={navigator.language}>
               <DatePicker
                 label="Due Date (optional)"
+                defaultValue={DateTime.fromISO(dueDate)}
                 id="dueDate"
                 name="dueDate"
                 slotProps={{
                   field: { clearable: true, onClear: () => setEditTaskDueDateSelected(false) },
                 }}
                 format="yyyy-LL-dd"
-                onChange={() => setEditTaskDueDateSelected(true)}
               />
               {editTaskDueDateSelected && (
                 <TimePicker
@@ -149,6 +150,13 @@ export default function Task({
             sx={completed ? { textDecoration: "line-through", color: "#818181" } : null}
           >
             {title}
+          </Typography>
+
+          <Typography
+            variant="caption"
+            color={isBefore(parseISO(dueDate), startOfToday()) ? "red" : "black"}
+          >
+            Due: {dueDate}
           </Typography>
         </Box>
 
