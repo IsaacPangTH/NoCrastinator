@@ -33,10 +33,7 @@ export default function Task({
   handleAddSchedule,
   handleDelete,
   completed,
-  dueDate = "",
-  dueTime = "",
-  startTime = null,
-  endTime = null,
+  className = "task",
 }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [scheduleTaskDialogOpen, setScheduleTaskDialogOpen] = useState(false);
@@ -56,7 +53,7 @@ export default function Task({
 
   const handleEditTask = () => {
     setEditTaskDialogOpen(true);
-    setEditTaskDueDateSelected(dueDate == "" ? false : true);
+    setEditTaskDueDateSelected(false);
   };
   const handleCloseEditTask = () => {
     setEditTaskDialogOpen(false);
@@ -104,7 +101,6 @@ export default function Task({
             <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale={navigator.language}>
               <DatePicker
                 label="Due Date (optional)"
-                defaultValue={dueDate == "" ? null : DateTime.fromISO(dueDate)}
                 id="dueDate"
                 name="dueDate"
                 slotProps={{
@@ -116,7 +112,6 @@ export default function Task({
               {editTaskDueDateSelected && (
                 <TimePicker
                   label="Time Due (optional)"
-                  defaultValue={dueTime == "" ? null : DateTime.fromISO(dueTime)}
                   id="dueTime"
                   name="dueTime"
                   viewRenderers={{
@@ -155,30 +150,8 @@ export default function Task({
           >
             {title}
           </Typography>
-
-          {dueDate !== "" && (
-            <Typography
-              variant="caption"
-              color={
-                isBefore(parseISO(dueDate), startOfToday())
-                  ? "red"
-                  : dueTime === ""
-                  ? "black"
-                  : isBefore(parseISO(dueDate + "T" + dueTime), new Date())
-                  ? "red"
-                  : "black"
-              }
-            >
-              Due: {dueDate} {dueTime !== "" && "at " + dueTime}
-            </Typography>
-          )}
         </Box>
-        {startTime !== null && endTime !== null && (
-          <Typography variant="subtitle2">
-            Scheduled from {format(startTime, "yyyy-MM-dd HH:mm")} to
-            {" " + format(endTime, "yyyy-MM-dd HH:mm")}
-          </Typography>
-        )}
+
         <IconButton
           id={"menu-button-" + id}
           aria-controls={open ? "task-menu" : undefined}
@@ -260,7 +233,6 @@ export default function Task({
                   },
                 }}
                 orientation="landscape"
-                defaultValue={startTime}
                 value={taskStartDateTime}
                 onChange={(newValue) => setTaskStartDateTime(newValue)}
                 format="yyyy-MM-dd HH:mm"
@@ -276,7 +248,6 @@ export default function Task({
                   },
                 }}
                 orientation="landscape"
-                defaultValue={endTime}
                 value={taskEndDateTime}
                 onChange={(newValue) => setTaskEndDateTime(newValue)}
                 format="yyyy-MM-dd HH:mm"
