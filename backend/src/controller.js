@@ -41,7 +41,6 @@ app.post("/tasks", async (req, res) => {
 });
 
 app.patch("/tasks", async (req, res) => {
-  console.log(req.body)
   const response = await edittask(req.body);
   res.json(response);
 });

@@ -1,5 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Task from "./Task";
 import {
@@ -29,6 +28,7 @@ export default function Tasks() {
   const [tasks, setTasks] = useState([]);
   const [addTaskDialogOpen, setAddTaskDialogOpen] = useState(false);
   const [newTaskDueDateSelected, setNewTaskDueDateSelected] = useState(false);
+  const [update, setUpdate] = useState(false);
 
   const handleComplete = async (id) => {
     try {
@@ -41,6 +41,7 @@ export default function Tasks() {
     } catch (error) {
       alert("Backend is down! Please try again later.");
     }
+    setUpdate(true);
   };
 
   const handleEdit = async (event) => {
@@ -56,6 +57,7 @@ export default function Tasks() {
       console.log(error);
       alert("Backend is down! Please try again later.");
     }
+    setUpdate(true);
   };
 
   const handleAddSchedule = async (obj) => {
@@ -69,6 +71,7 @@ export default function Tasks() {
       console.log(error);
       alert("Backend is down! Please try again later.");
     }
+    setUpdate(true);
   };
 
   const handleDelete = async (id) => {
@@ -83,6 +86,7 @@ export default function Tasks() {
       console.log(err);
       alert("Backend is down! Please try again later.");
     }
+    setUpdate(true);
   };
 
   const handleSubmit = async (event) => {
@@ -101,15 +105,18 @@ export default function Tasks() {
       alert("Backend is down! Please try again later.");
     }
     handleCloseAddTask();
+    setUpdate(true);
   };
 
   const handleAddTask = () => {
     setAddTaskDialogOpen(true);
     setNewTaskDueDateSelected(false);
+    setUpdate(true);
   };
   const handleCloseAddTask = () => {
     setAddTaskDialogOpen(false);
     setNewTaskDueDateSelected(false);
+    setUpdate(true);
   };
 
   useEffect(() => {
@@ -125,9 +132,9 @@ export default function Tasks() {
       );
       setTasks(response.data);
     };
-
     fetchData();
-  }, [addTaskDialogOpen, handleComplete, handleDelete, handleEdit, handleAddSchedule]);
+    setUpdate(false);
+  }, [addTaskDialogOpen, update]);
 
   return (
     <>
