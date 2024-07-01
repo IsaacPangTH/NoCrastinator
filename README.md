@@ -1,5 +1,8 @@
 # NoCrastinator Installation Guide
-Guide for installing NoCrastinator for local usage.
+This is a guide for installing NoCrastinator for local usage.
+
+Production website can be found here! 
+https://nocrastinator.onrender.com/
 
 ## Introduction
 This webapp is separated into backend and frontend. Each must be run on a separate terminal.
