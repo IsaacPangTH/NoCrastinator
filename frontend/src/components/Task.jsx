@@ -56,7 +56,7 @@ export default function Task({
 
   const handleEditTask = () => {
     setEditTaskDialogOpen(true);
-    setEditTaskDueDateSelected(dueTime == "" ? false : true);
+    setEditTaskDueDateSelected(dueDate == "" ? false : true);
   };
   const handleCloseEditTask = () => {
     setEditTaskDialogOpen(false);
