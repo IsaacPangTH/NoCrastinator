@@ -3,6 +3,7 @@ import NavBar from "../components/NavBar";
 import { useNavigate } from "react-router-dom";
 import Leaderboard from "../components/Leaderboard";
 import { Typography } from "@mui/material";
+import WelcomeHeading from "../components/WelcomeHeading";
 
 export default function LeaderboardPage() {
   const alertShownRef = useRef(false);

@@ -3,6 +3,7 @@ import NavBar from "../components/NavBar";
 import Tasks from "../components/Tasks";
 import { useNavigate } from "react-router-dom";
 import { Typography } from "@mui/material";
+import WelcomeHeading from "../components/WelcomeHeading";
 
 export default function TaskList() {
   const alertShownRef = useRef(false);
