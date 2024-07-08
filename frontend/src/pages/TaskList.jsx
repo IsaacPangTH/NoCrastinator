@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import NavBar from "../components/NavBar";
 import Tasks from "../components/Tasks";
 import { useNavigate } from "react-router-dom";
+import { Typography } from "@mui/material";
 
 export default function TaskList() {
   const alertShownRef = useRef(false);
@@ -17,8 +18,8 @@ export default function TaskList() {
 
   return (
     <NavBar p={3}>
-      <h1>Welcome {sessionStorage.getItem("name")}!</h1>
-      <h1>Task List</h1>
+      <WelcomeHeading />
+      <Typography variant="h4">Task List</Typography>
       <Tasks />
     </NavBar>
   );

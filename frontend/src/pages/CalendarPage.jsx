@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import NavBar from "../components/NavBar";
 import { useNavigate } from "react-router-dom";
 import TaskCalendar from "../components/Calendar";
+import WelcomeHeading from "../components/WelcomeHeading";
 
 export default function CalendarPage() {
   const alertShownRef = useRef(false);
@@ -19,8 +20,7 @@ export default function CalendarPage() {
 
   return (
     <NavBar p={3}>
-      <h1>Welcome {sessionStorage.getItem("name")}!</h1>
-      <h1>Calendar</h1>
+      <WelcomeHeading />
       <TaskCalendar />
     </NavBar>
   );
