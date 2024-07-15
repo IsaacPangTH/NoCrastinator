@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import NavBar from "../components/NavBar";
 import { useNavigate } from "react-router-dom";
-import TaskCalendar from "../components/Calendar";
+import TaskCalendar from "../components/Calendar/Calendar";
 import WelcomeHeading from "../components/WelcomeHeading";
 
 export default function CalendarPage() {

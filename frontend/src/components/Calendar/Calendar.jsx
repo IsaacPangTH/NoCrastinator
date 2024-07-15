@@ -8,6 +8,7 @@ import getDay from "date-fns/getDay";
 import enUS from "date-fns/locale/en-US";
 import { parseISO } from "date-fns";
 import { Box, Button, Typography } from "@mui/material";
+import ScheduleTaskDialog from "./ScheduleTaskDialog";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
@@ -25,6 +26,15 @@ const localizer = dateFnsLocalizer({
 
 export default function TaskCalendar() {
   const [tasks, setTasks] = useState([]);
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  function handleOpenDialog() {
+    setDialogOpen(true);
+  }
+
+  function handleCloseDialog() {
+    setDialogOpen(false);
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,7 +66,9 @@ export default function TaskCalendar() {
         <Typography variant="h4">Calendar</Typography>
         <Box display="flex" justifyContent="end" gap={1}>
           <Button variant="contained">Add Event</Button>
-          <Button variant="contained">Schedule Task</Button>
+          <Button variant="contained" onClick={handleOpenDialog}>
+            Schedule Task
+          </Button>
         </Box>
       </Box>
       <Box height={"50%"}>
@@ -68,6 +80,7 @@ export default function TaskCalendar() {
           scrollToTime={new Date()}
         />
       </Box>
+      <ScheduleTaskDialog open={dialogOpen} onClose={handleCloseDialog} />
     </>
   );
 }
