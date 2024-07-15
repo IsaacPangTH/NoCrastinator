@@ -17,7 +17,6 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 export default function ScheduleTaskDialog(props) {
   const { open, onClose } = props;
   const [tasks, setTasks] = useState([]);
-  const [update, setUpdate] = useState(false);
   const [task, setTask] = useState(null);
   const [startDateTime, setStartDateTime] = useState(null);
   const [endDateTime, setEndDateTime] = useState(null);
@@ -39,8 +38,7 @@ export default function ScheduleTaskDialog(props) {
       setTasks(response.data);
     };
     fetchData();
-    setUpdate(false);
-  }, [update]);
+  }, []);
 
   return (
     <Dialog
@@ -65,9 +63,6 @@ export default function ScheduleTaskDialog(props) {
             getOptionLabel={(option) => option.title}
             sx={{ width: 300 }}
             renderInput={(params) => <TextField {...params} label="Task" />}
-            onOpen={() => {
-              setUpdate(true);
-            }}
             value={task}
             onChange={(event, newValue) => {
               setTask(newValue);

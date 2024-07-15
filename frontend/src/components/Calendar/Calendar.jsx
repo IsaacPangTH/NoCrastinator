@@ -56,7 +56,6 @@ export default function TaskCalendar() {
     .filter((task) => task.startTime !== null && task.endTime !== null)
     .map((task) => {
       if (task.endTime) {
-        console.log(task.endTime);
         return { title: task.title, start: parseISO(task.startTime), end: parseISO(task.endTime) };
       }
     });
