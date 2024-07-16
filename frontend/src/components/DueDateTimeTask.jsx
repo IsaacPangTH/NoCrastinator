@@ -15,11 +15,9 @@ import MenuItem from "@mui/material/MenuItem";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { LocalizationProvider, MobileDateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
-import { formatISO, parseISO, isBefore, isFuture, format } from "date-fns";
+import { formatISO, parseISO, isBefore, isFuture } from "date-fns";
 import { Snackbar, TextField } from "@mui/material";
 import { TimePicker } from "@mui/x-date-pickers";
-import { DateTime } from "luxon";
-import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 
@@ -100,10 +98,10 @@ export default function DueDateTimeTask({
               fullWidth
               variant="standard"
             />
-            <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale={navigator.language}>
+            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={navigator.language}>
               <DatePicker
                 label="Due Date (optional)"
-                defaultValue={DateTime.fromISO(dueDate)}
+                defaultValue={parseISO(dueDate)}
                 id="dueDate"
                 name="dueDate"
                 slotProps={{
@@ -115,7 +113,7 @@ export default function DueDateTimeTask({
               {editTaskDueDateSelected && (
                 <TimePicker
                   label="Time Due (optional)"
-                  defaultValue={DateTime.fromISO(dueTime)}
+                  defaultValue={parseISO(dueTime)}
                   id="dueTime"
                   name="dueTime"
                   viewRenderers={{
