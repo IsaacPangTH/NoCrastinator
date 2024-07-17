@@ -1,3 +1,5 @@
+//TODO: Strikethrough completed tasks
+
 import { React, useState, useEffect } from "react";
 import axios from "axios";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
@@ -6,7 +8,7 @@ import parse from "date-fns/parse";
 import startOfWeek from "date-fns/startOfWeek";
 import getDay from "date-fns/getDay";
 import enUS from "date-fns/locale/en-US";
-import { parseISO } from "date-fns";
+import { parseISO, formatISO } from "date-fns";
 import { Box, Button, Typography } from "@mui/material";
 import ScheduleTaskDialog from "./ScheduleTaskDialog";
 
@@ -24,9 +26,29 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
+const eventPropGetter = (event, start, end, isSelected) => {
+  if (!event.task) {
+    if (isSelected) {
+      return { style: { backgroundColor: "#2ab02a" } };
+    }
+    return { style: { backgroundColor: "limeGreen" } };
+  }
+  if (event.isCompleted) {
+    return {
+      style: {
+        textDecoration: "line-through",
+        backgroundColor: isSelected ? "#a1b3c9" : "LightSteelBlue",
+      },
+    };
+  }
+};
+
 export default function TaskCalendar() {
   const [tasks, setTasks] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [events, setEvents] = useState([
+    { title: "event", startTime: "20240717T1200", endTime: "20240717T1300" },
+  ]);
 
   function handleOpenDialog() {
     setDialogOpen(true);
@@ -52,13 +74,30 @@ export default function TaskCalendar() {
     fetchData();
   }, []);
 
-  const events = tasks
-    .filter((task) => task.startTime !== null && task.endTime !== null)
-    .map((task) => {
-      if (task.endTime) {
-        return { title: task.title, start: parseISO(task.startTime), end: parseISO(task.endTime) };
-      }
-    });
+  const calendarEvents = [
+    ...tasks
+      .filter((task) => task.startTime !== null && task.endTime !== null)
+      .map((task) => {
+        if (task.endTime) {
+          return {
+            title: task.title,
+            start: parseISO(task.startTime),
+            end: parseISO(task.endTime),
+            task: true,
+            isCompleted: task.isCompleted,
+          };
+        }
+      }),
+    ...events.map((event) => {
+      return {
+        title: event.title,
+        start: parseISO(event.startTime),
+        end: parseISO(event.endTime),
+        task: false,
+      };
+    }),
+  ];
+
   return (
     <>
       <Box paddingY={3} display="flex" justifyContent="space-between" gap={1}>
@@ -73,10 +112,11 @@ export default function TaskCalendar() {
       <Box height={"50%"}>
         <Calendar
           localizer={localizer}
-          events={events}
+          events={calendarEvents}
           defaultView="week"
           views={["month", "week", "day"]}
           scrollToTime={new Date()}
+          eventPropGetter={eventPropGetter}
         />
       </Box>
       <ScheduleTaskDialog open={dialogOpen} onClose={handleCloseDialog} />
