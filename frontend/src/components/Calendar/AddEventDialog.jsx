@@ -98,7 +98,7 @@ export default function AddEventDialog(props) {
         open={openInvalidInput}
         autoHideDuration={5000}
         onClose={() => setOpenInvalidInput(false)}
-        message="Input a valid event title, start time and end time"
+        message="Input valid start and end times."
       />
     </>
   );
