@@ -1,5 +1,3 @@
-//TODO: Strikethrough completed tasks
-
 import { React, useState, useEffect } from "react";
 import axios from "axios";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
