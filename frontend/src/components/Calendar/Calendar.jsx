@@ -9,6 +9,7 @@ import enUS from "date-fns/locale/en-US";
 import { parseISO, formatISO } from "date-fns";
 import { Box, Button, Typography } from "@mui/material";
 import ScheduleTaskDialog from "./ScheduleTaskDialog";
+import AddEventDialog from "./AddEventDialog";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
@@ -43,17 +44,23 @@ const eventPropGetter = (event, start, end, isSelected) => {
 
 export default function TaskCalendar() {
   const [tasks, setTasks] = useState([]);
-  const [dialogOpen, setDialogOpen] = useState(false);
   const [events, setEvents] = useState([
     { title: "event", startTime: "20240717T1200", endTime: "20240717T1300" },
   ]);
+  const [scheduleTaskDialogOpen, setScheduleTaskDialogOpen] = useState(false);
+  const [addEventDialogOpen, setAddEventDialogOpen] = useState(false);
 
-  function handleOpenDialog() {
-    setDialogOpen(true);
+  function handleOpenScheduleTaskDialog() {
+    setScheduleTaskDialogOpen(true);
   }
-
-  function handleCloseDialog() {
-    setDialogOpen(false);
+  function handleCloseScheduleTaskDialog() {
+    setScheduleTaskDialogOpen(false);
+  }
+  function handleOpenAddEventDialog() {
+    setAddEventDialogOpen(true);
+  }
+  function handleCloseAddEventDialog() {
+    setAddEventDialogOpen(false);
   }
 
   useEffect(() => {
@@ -101,8 +108,10 @@ export default function TaskCalendar() {
       <Box paddingY={3} display="flex" justifyContent="space-between" gap={1}>
         <Typography variant="h4">Calendar</Typography>
         <Box display="flex" justifyContent="end" gap={1}>
-          <Button variant="contained">Add Event</Button>
-          <Button variant="contained" onClick={handleOpenDialog}>
+          <Button variant="contained" onClick={handleOpenAddEventDialog}>
+            Add Event
+          </Button>
+          <Button variant="contained" onClick={handleOpenScheduleTaskDialog}>
             Schedule Task
           </Button>
         </Box>
@@ -117,7 +126,8 @@ export default function TaskCalendar() {
           eventPropGetter={eventPropGetter}
         />
       </Box>
-      <ScheduleTaskDialog open={dialogOpen} onClose={handleCloseDialog} />
+      <ScheduleTaskDialog open={scheduleTaskDialogOpen} onClose={handleCloseScheduleTaskDialog} />
+      <AddEventDialog open={addEventDialogOpen} onClose={handleCloseAddEventDialog} />
     </>
   );
 }
