@@ -125,7 +125,7 @@ export default function TaskCalendar() {
           </Button>
         </Box>
       </Box>
-      <Box height={"50%"}>
+      <Box height={"70vh"}>
         <Calendar
           localizer={localizer}
           events={calendarEvents}

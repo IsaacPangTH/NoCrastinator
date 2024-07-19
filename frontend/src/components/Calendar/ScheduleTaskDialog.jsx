@@ -45,10 +45,10 @@ export default function ScheduleTaskDialog(props) {
           },
         }
       );
-      setTasks(response.data);
+      setTasks(response.data.filter((task) => task.startTime === undefined));
     };
     fetchData();
-  }, []);
+  }, [task]);
 
   return (
     <>
@@ -58,7 +58,7 @@ export default function ScheduleTaskDialog(props) {
         onClose={handleClose}
         PaperProps={{
           component: "form",
-          onSubmit: (event) => {
+          onSubmit: async (event) => {
             event.preventDefault();
             if (
               task === null ||
@@ -68,6 +68,26 @@ export default function ScheduleTaskDialog(props) {
             ) {
               setOpenInvalidInput(true);
             } else {
+              try {
+                const form = new FormData(event.currentTarget);
+                const formJson = Object.fromEntries(form.entries());
+                const response = await axios.patch(
+                  `${BACKEND_URL}/schedule`,
+                  {
+                    id: task.id,
+                    start_time: formJson.startDateTime,
+                    end_time: formJson.endDateTime,
+                  },
+                  {
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                  }
+                );
+              } catch (error) {
+                console.log(error);
+                alert("Backend is down! Please try again later.");
+              }
               handleClose();
             }
           },
@@ -78,7 +98,8 @@ export default function ScheduleTaskDialog(props) {
           <Stack spacing={3}>
             <Autocomplete
               id="task"
-              options={tasks.filter((task) => task.startTime === undefined)}
+              options={tasks}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
               getOptionLabel={(option) =>
                 option.dueDate === undefined
                   ? option.title
@@ -98,6 +119,7 @@ export default function ScheduleTaskDialog(props) {
               value={startDateTime}
               onChange={handleChangeStart}
               onClear={() => null}
+              required={true}
             />
             <DtPicker
               type="DateTime"
@@ -107,6 +129,7 @@ export default function ScheduleTaskDialog(props) {
               value={endDateTime}
               onChange={handleChangeEnd}
               onClear={() => null}
+              required={true}
             />
           </Stack>
         </DialogContent>

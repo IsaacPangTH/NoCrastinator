@@ -65,7 +65,7 @@ export default function AddEventDialog(props) {
           },
         }}
       >
-        <DialogTitle>Schedule Task</DialogTitle>
+        <DialogTitle>Schedule Event</DialogTitle>
         <DialogContent>
           <Stack spacing={3} width={300}>
             <TextField
