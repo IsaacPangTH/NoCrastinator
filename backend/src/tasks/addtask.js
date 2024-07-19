@@ -20,11 +20,9 @@ const addtask = async (form) => {
     if (form.dueTime != "" && form.dueTime != undefined) {
       time = form.dueTime;
     }
-    const temp = await client.query("SELECT * FROM accounts WHERE id=$1", [form.user]);
-    const id = temp.rows[0].id;
     await client.query(
       `INSERT INTO tasks ("user", title, due_date, due_time, is_completed) VALUES ($1, $2, $3, $4, $5)`,
-      [id, form.title, date, time, form.isCompleted]
+      [form.user, form.title, date, time, form.isCompleted]
     );
     return "Success!";
   } catch (err) {

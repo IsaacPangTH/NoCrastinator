@@ -38,7 +38,7 @@ export default function AddEventDialog(props) {
         onClose={handleClose}
         PaperProps={{
           component: "form",
-          onSubmit: (event) => {
+          onSubmit: async (event) => {
             event.preventDefault();
             if (
               startDateTime === null ||
@@ -47,6 +47,19 @@ export default function AddEventDialog(props) {
             ) {
               setOpenInvalidInput(true);
             } else {
+              try {
+                const form = new FormData(event.currentTarget);
+                const formJson = Object.fromEntries(form.entries());
+                formJson.user = sessionStorage.getItem("user");
+                const response = await axios.post(`${BACKEND_URL}/events`, formJson, {
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                });
+              } catch (error) {
+                console.log(error);
+                alert("Backend is down! Please try again later.");
+              }
               handleClose();
             }
           },

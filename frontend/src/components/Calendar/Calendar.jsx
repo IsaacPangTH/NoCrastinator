@@ -44,9 +44,7 @@ const eventPropGetter = (event, start, end, isSelected) => {
 
 export default function TaskCalendar() {
   const [tasks, setTasks] = useState([]);
-  const [events, setEvents] = useState([
-    { title: "event", startTime: "20240717T1200", endTime: "20240717T1300" },
-  ]);
+  const [events, setEvents] = useState([]);
   const [scheduleTaskDialogOpen, setScheduleTaskDialogOpen] = useState(false);
   const [addEventDialogOpen, setAddEventDialogOpen] = useState(false);
 
@@ -65,7 +63,7 @@ export default function TaskCalendar() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await axios.post(
+      const response1 = await axios.post(
         `${BACKEND_URL}/readtask`,
         { user: sessionStorage.getItem("user") },
         {
@@ -74,10 +72,21 @@ export default function TaskCalendar() {
           },
         }
       );
-      setTasks(response.data);
+      setTasks(response1.data);
+
+      const response2 = await axios.post(
+        `${BACKEND_URL}/readevent`,
+        { user: sessionStorage.getItem("user") },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setEvents(response2.data);
     };
     fetchData();
-  }, []);
+  }, [scheduleTaskDialogOpen, addEventDialogOpen]);
 
   const calendarEvents = [
     ...tasks
