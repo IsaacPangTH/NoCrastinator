@@ -16,10 +16,8 @@ import { isAfter } from "date-fns";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
-export default function ScheduleTaskDialog(props) {
+export default function AddEventDialog(props) {
   const { open, onClose } = props;
-  const [tasks, setTasks] = useState([]);
-  const [task, setTask] = useState(null);
   const [startDateTime, setStartDateTime] = useState(null);
   const [endDateTime, setEndDateTime] = useState(null);
   const [openInvalidInput, setOpenInvalidInput] = useState(false);
@@ -29,31 +27,13 @@ export default function ScheduleTaskDialog(props) {
 
   const handleClose = () => {
     onClose();
-    setTask(null);
     setStartDateTime(null);
     setEndDateTime(null);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await axios.post(
-        `${BACKEND_URL}/readtask`,
-        { user: sessionStorage.getItem("user") },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      setTasks(response.data.filter((task) => task.startTime === undefined));
-    };
-    fetchData();
-  }, [task]);
-
   return (
     <>
       <Dialog
-        fullWidth
         open={open}
         onClose={handleClose}
         PaperProps={{
@@ -61,7 +41,6 @@ export default function ScheduleTaskDialog(props) {
           onSubmit: async (event) => {
             event.preventDefault();
             if (
-              task === null ||
               startDateTime === null ||
               endDateTime === null ||
               isAfter(startDateTime, endDateTime)
@@ -71,19 +50,12 @@ export default function ScheduleTaskDialog(props) {
               try {
                 const form = new FormData(event.currentTarget);
                 const formJson = Object.fromEntries(form.entries());
-                const response = await axios.patch(
-                  `${BACKEND_URL}/schedule`,
-                  {
-                    id: task.id,
-                    start_time: formJson.startDateTime,
-                    end_time: formJson.endDateTime,
+                formJson.user = sessionStorage.getItem("user");
+                const response = await axios.post(`${BACKEND_URL}/events`, formJson, {
+                  headers: {
+                    "Content-Type": "application/json",
                   },
-                  {
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                  }
-                );
+                });
               } catch (error) {
                 console.log(error);
                 alert("Backend is down! Please try again later.");
@@ -93,23 +65,20 @@ export default function ScheduleTaskDialog(props) {
           },
         }}
       >
-        <DialogTitle>Schedule Task</DialogTitle>
+        <DialogTitle>Schedule Event</DialogTitle>
         <DialogContent>
-          <Stack spacing={3}>
-            <Autocomplete
-              id="task"
-              options={tasks}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-              getOptionLabel={(option) =>
-                option.dueDate === undefined
-                  ? option.title
-                  : option.title + " (Due " + option.dueDate + ")"
-              }
-              renderInput={(params) => <TextField {...params} label="Task" />}
-              value={task}
-              onChange={(event, newValue) => {
-                setTask(newValue);
-              }}
+          <Stack spacing={3} width={300}>
+            <TextField
+              autoFocus
+              autoComplete="off"
+              required
+              margin="dense"
+              id="title"
+              name="title"
+              label="Event Title"
+              type="text"
+              fullWidth
+              variant="standard"
             />
             <DtPicker
               type="DateTime"
@@ -135,14 +104,14 @@ export default function ScheduleTaskDialog(props) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button type="submit">Schedule Task</Button>
+          <Button type="submit">Add event</Button>
         </DialogActions>
       </Dialog>
       <Snackbar
         open={openInvalidInput}
         autoHideDuration={5000}
         onClose={() => setOpenInvalidInput(false)}
-        message="Select a valid task, start time and end time"
+        message="Input valid start and end times."
       />
     </>
   );

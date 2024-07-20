@@ -1,13 +1,15 @@
 const express = require("express");
 const cors = require("cors");
-const { signup } = require("./signup");
-const { login } = require("./login");
-const { addtask } = require("./addtask");
-const { readtask } = require("./readtask");
-const { patchcompleted } = require("./patchcompleted");
-const { edittask } = require("./edittask");
-const { deletetask } = require("./deletetask");
-const { schedule } = require("./schedule");
+const { login } = require("./accounts/login");
+const { signup } = require("./accounts/signup");
+const { readtask } = require("./tasks/readtask");
+const { addtask } = require("./tasks/addtask");
+const { edittask } = require("./tasks/edittask");
+const { deletetask } = require("./tasks/deletetask");
+const { patchcompleted } = require("./tasks/patchcompleted");
+const { schedule } = require("./tasks/schedule");
+const { readevent } = require("./events/readevent");
+const { addevent } = require("./events/addevent");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -57,6 +59,16 @@ app.patch("/completed", async (req, res) => {
 
 app.patch("/schedule", async (req, res) => {
   const response = await schedule(req.body);
+  res.json(response);
+});
+
+app.post("/readevent", async (req, res) => {
+  const response = await readevent(req.body);
+  res.json(response);
+});
+
+app.post("/events", async (req, res) => {
+  const response = await addevent(req.body);
   res.json(response);
 });
 

@@ -7,7 +7,7 @@ import {
 } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 
-export default function DtPicker({ type, label, id, name, value, onChange, onClear }) {
+export default function DtPicker({ type, label, id, name, value, onChange, onClear, required }) {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       {type === "DateTime" && (
@@ -20,6 +20,7 @@ export default function DtPicker({ type, label, id, name, value, onChange, onCle
           onChange={onChange}
           slotProps={{
             textField: {
+              required: required,
               format: "yyyy-MM-dd HH:mm",
             },
           }}
@@ -34,7 +35,7 @@ export default function DtPicker({ type, label, id, name, value, onChange, onCle
           onChange={onChange}
           slotProps={{
             textField: {
-              required: true,
+              required: { required },
               clearable: true,
               format: "yyyy-MM-dd",
               onClear: onClear,
@@ -51,7 +52,7 @@ export default function DtPicker({ type, label, id, name, value, onChange, onCle
           onChange={onChange}
           slotProps={{
             textField: {
-              required: true,
+              required: { required },
               clearable: true,
               format: "HH:mm",
             },
