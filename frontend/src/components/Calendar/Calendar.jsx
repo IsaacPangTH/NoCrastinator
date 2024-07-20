@@ -133,6 +133,9 @@ export default function TaskCalendar() {
           views={["month", "week", "day"]}
           scrollToTime={new Date()}
           eventPropGetter={eventPropGetter}
+          formats={{
+            eventTimeRangeFormat: ({ start, end }, culture, localizer) => "",
+          }}
         />
       </Box>
       <ScheduleTaskDialog open={scheduleTaskDialogOpen} onClose={handleCloseScheduleTaskDialog} />
