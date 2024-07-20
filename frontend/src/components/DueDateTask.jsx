@@ -97,7 +97,7 @@ export default function DueDateTask({
               fullWidth
               variant="standard"
             />
-            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={navigator.language}>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DatePicker
                 label="Due Date (optional)"
                 defaultValue={parseISO(dueDate)}
