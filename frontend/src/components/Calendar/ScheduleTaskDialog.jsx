@@ -11,7 +11,7 @@ import {
   Snackbar,
 } from "@mui/material";
 import axios from "axios";
-import DtPicker from "../DtPicker";
+import DtPicker from "../UI/DtPicker";
 import { isAfter } from "date-fns";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";

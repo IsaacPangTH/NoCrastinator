@@ -15,7 +15,7 @@ import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
 import LeaderboardOutlinedIcon from "@mui/icons-material/LeaderboardOutlined";
 import { useNavigate } from "react-router-dom";
 import { Avatar, Button, Menu, MenuItem } from "@mui/material";
-import NoCrastinatorLogoWhite from "../assets/NoCrastinatorWhite.png";
+import NoCrastinatorLogoWhite from "../../assets/NoCrastinatorWhite.png";
 
 const drawerWidth = 100;
 
