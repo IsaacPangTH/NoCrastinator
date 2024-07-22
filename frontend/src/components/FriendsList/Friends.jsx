@@ -58,34 +58,49 @@ export default function Friends() {
             </Badge>
           </AccordionSummary>
           <AccordionDetails>
-            <Grid container spacing={7} padding={2}>
-              {requests.map((name) => (
-                <Grid
-                  item
-                  xs={4}
-                  paddingY={2}
-                  paddingX={8}
-                  sx={{ display: "flex", justifyContent: "space-between" }}
-                >
-                  <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 2 }}>
-                    <Avatar /> <Typography>{name}</Typography>
-                  </Box>
-                  <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 1 }}>
-                    <Fab
-                      variant="contained"
-                      color="success"
-                      size="small"
-                      sx={{ boxShadow: "none" }}
+            {requests.length > 0 ? (
+              <Grid container spacing={7} padding={2}>
+                {requests.map((name) => (
+                  <Grid
+                    item
+                    xs={4}
+                    paddingY={2}
+                    paddingX={8}
+                    sx={{ display: "flex", justifyContent: "space-between" }}
+                  >
+                    <Box
+                      sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 2 }}
                     >
-                      <CheckIcon />
-                    </Fab>
-                    <Fab variant="contained" color="error" size="small" sx={{ boxShadow: "none" }}>
-                      <CloseIcon />
-                    </Fab>
-                  </Box>
-                </Grid>
-              ))}
-            </Grid>
+                      <Avatar /> <Typography>{name}</Typography>
+                    </Box>
+                    <Box
+                      sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 1 }}
+                    >
+                      <Fab
+                        variant="contained"
+                        color="success"
+                        size="small"
+                        sx={{ boxShadow: "none" }}
+                      >
+                        <CheckIcon />
+                      </Fab>
+                      <Fab
+                        variant="contained"
+                        color="error"
+                        size="small"
+                        sx={{ boxShadow: "none" }}
+                      >
+                        <CloseIcon />
+                      </Fab>
+                    </Box>
+                  </Grid>
+                ))}
+              </Grid>
+            ) : (
+              <Typography paddingTop={1}>
+                No requests received. Use the button above to add new friends.
+              </Typography>
+            )}
           </AccordionDetails>
         </Accordion>
         <Accordion defaultExpanded>
