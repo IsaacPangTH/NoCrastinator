@@ -17,6 +17,7 @@ import {
   ListItemText,
   Stack,
   TextField,
+  Typography,
 } from "@mui/material";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
@@ -140,7 +141,9 @@ export default function Tasks() {
 
   return (
     <>
-      <h2>To-do</h2>
+      <Typography variant="h5" fontWeight="bold">
+        To-do
+      </Typography>
       <List>
         {tasks
           .filter((task) => !task.isCompleted)
@@ -162,7 +165,9 @@ export default function Tasks() {
         </ListItem>
       </List>
 
-      <h2>Completed</h2>
+      <Typography variant="h5" fontWeight="bold">
+        Completed
+      </Typography>
       <List>{getCompleted(tasks)}</List>
 
       <Dialog
