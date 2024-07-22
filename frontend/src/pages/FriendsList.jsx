@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from "react";
-import NavBar from "../components/NavBar";
+import NavBar from "../components/UI/NavBar";
 import { useNavigate } from "react-router-dom";
-import Friends from "../components/Friends";
+import Friends from "../components/FriendsList/Friends";
 import { Typography } from "@mui/material";
-import WelcomeHeading from "../components/WelcomeHeading";
+import WelcomeHeading from "../components/UI/WelcomeHeading";
 
 export default function FriendsList() {
   const alertShownRef = useRef(false);

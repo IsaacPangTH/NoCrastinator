@@ -114,7 +114,7 @@ export default function TaskCalendar() {
 
   return (
     <>
-      <Box paddingY={3} display="flex" justifyContent="space-between" gap={1}>
+      <Box display="flex" justifyContent="space-between" gap={1}>
         <Typography variant="h4">Calendar</Typography>
         <Box display="flex" justifyContent="end" gap={1}>
           <Button variant="contained" onClick={handleOpenAddEventDialog}>
@@ -125,7 +125,7 @@ export default function TaskCalendar() {
           </Button>
         </Box>
       </Box>
-      <Box height={"70vh"}>
+      <Box height={"70vh"} paddingTop={3}>
         <Calendar
           localizer={localizer}
           events={calendarEvents}
