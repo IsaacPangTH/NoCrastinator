@@ -2,8 +2,8 @@ import React, { useEffect, useRef } from "react";
 import NavBar from "../components/UI/NavBar";
 import { useNavigate } from "react-router-dom";
 import Leaderboard from "../components/Leaderboard/Leaderboard";
-import { Typography } from "@mui/material";
 import WelcomeHeading from "../components/UI/WelcomeHeading";
+import PageTitle from "../components/UI/PageTitle";
 
 export default function LeaderboardPage() {
   const alertShownRef = useRef(false);
@@ -22,7 +22,7 @@ export default function LeaderboardPage() {
   return (
     <NavBar p={3}>
       <WelcomeHeading />
-      <Typography variant="h4">Leaderboard</Typography>
+      <PageTitle>Leaderboard</PageTitle>
       <Leaderboard />
     </NavBar>
   );
