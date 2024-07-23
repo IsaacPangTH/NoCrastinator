@@ -35,12 +35,15 @@ export default function Tasks() {
 
   const handleComplete = async (id) => {
     try {
-      const obj = { id: id };
-      const response = await axios.patch(`${BACKEND_URL}/completed`, obj, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await axios.patch(
+        `${BACKEND_URL}/completed`,
+        { id: id },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
     } catch (error) {
       alert("Backend is down! Please try again later.");
     }
@@ -125,7 +128,7 @@ export default function Tasks() {
   useEffect(() => {
     const fetchData = async () => {
       const response = await axios.post(
-        `${BACKEND_URL}/readtask`,
+        `${BACKEND_URL}/readtasks`,
         { user: sessionStorage.getItem("user") },
         {
           headers: {

@@ -64,7 +64,7 @@ export default function TaskCalendar() {
   useEffect(() => {
     const fetchData = async () => {
       const response1 = await axios.post(
-        `${BACKEND_URL}/readtask`,
+        `${BACKEND_URL}/readtasks`,
         { user: sessionStorage.getItem("user") },
         {
           headers: {
@@ -75,7 +75,7 @@ export default function TaskCalendar() {
       setTasks(response1.data);
 
       const response2 = await axios.post(
-        `${BACKEND_URL}/readevent`,
+        `${BACKEND_URL}/readevents`,
         { user: sessionStorage.getItem("user") },
         {
           headers: {
