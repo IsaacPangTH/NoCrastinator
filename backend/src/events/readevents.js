@@ -5,31 +5,22 @@ const DATABASE_URL =
 
 pg.types.setTypeParser(pg.types.builtins.DATE, (value) => value);
 pg.types.setTypeParser(pg.types.builtins.TIMESTAMP, (value) => value);
-const readtask = async (data) => {
+const readevents = async (data) => {
   const client = new Client({
     connectionString: DATABASE_URL,
   });
   await client.connect();
   try {
     const res = [];
-    const temp = await client.query(
-      `SELECT * FROM tasks WHERE "user"=$1 ORDER BY due_date NULLS LAST, due_time NULLS LAST`,
-      [data.user]
-    );
+    const temp = await client.query(`SELECT * FROM events WHERE "user"=$1`, [data.user]);
 
     for (row of temp.rows) {
-      const obj = { id: row.id, title: row.title, isCompleted: row.is_completed };
-      if (row.due_date) {
-        obj.dueDate = row.due_date;
-      }
-      if (row.due_time) {
-        obj.dueTime = JSON.stringify(row.due_time).substring(1, 6);
-      }
-      if (row.end_time) {
-        obj.endTime = row.end_time;
-        obj.startTime = row.start_time;
-      }
-
+      const obj = {
+        id: row.id,
+        title: row.title,
+        startTime: row.start_time,
+        endTime: row.end_time,
+      };
       res.push(obj);
     }
     return res;
@@ -42,5 +33,5 @@ const readtask = async (data) => {
 };
 
 module.exports = {
-  readtask,
+  readevents,
 };

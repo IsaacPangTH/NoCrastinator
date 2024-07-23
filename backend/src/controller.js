@@ -2,14 +2,19 @@ const express = require("express");
 const cors = require("cors");
 const { login } = require("./accounts/login");
 const { signup } = require("./accounts/signup");
-const { readtask } = require("./tasks/readtask");
+const { readtasks } = require("./tasks/readtasks");
 const { addtask } = require("./tasks/addtask");
 const { edittask } = require("./tasks/edittask");
 const { deletetask } = require("./tasks/deletetask");
 const { patchcompleted } = require("./tasks/patchcompleted");
 const { schedule } = require("./tasks/schedule");
-const { readevent } = require("./events/readevent");
+const { readevents } = require("./events/readevents");
 const { addevent } = require("./events/addevent");
+const { readfriends } = require("./friends/readfriends");
+const { readrequests } = require("./friends/readrequests");
+const { addfriend } = require("./friends/addfriend");
+const { accept } = require("./friends/accept");
+const { reject } = require("./friends/reject");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -18,6 +23,7 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// Accounts
 app.post("/login", async (req, res) => {
   const response = await login(req.body);
   if (response.name) {
@@ -32,8 +38,9 @@ app.post("/signup", async (req, res) => {
   res.json(response);
 });
 
-app.post("/readtask", async (req, res) => {
-  const response = await readtask(req.body);
+// Tasks
+app.post("/readtasks", async (req, res) => {
+  const response = await readtasks(req.body);
   res.json(response);
 });
 
@@ -62,13 +69,40 @@ app.patch("/schedule", async (req, res) => {
   res.json(response);
 });
 
-app.post("/readevent", async (req, res) => {
-  const response = await readevent(req.body);
+// Events
+app.post("/readevents", async (req, res) => {
+  const response = await readevents(req.body);
   res.json(response);
 });
 
 app.post("/events", async (req, res) => {
   const response = await addevent(req.body);
+  res.json(response);
+});
+
+// Friends
+app.post("/readfriends", async (req, res) => {
+  const response = await readfriends(req.body);
+  res.json(response);
+});
+
+app.post("/readrequests", async (req, res) => {
+  const response = await readrequests(req.body);
+  res.json(response);
+});
+
+app.post("/friends", async (req, res) => {
+  const response = await addfriend(req.body);
+  res.json(response);
+});
+
+app.patch("/friends", async (req, res) => {
+  const response = await accept(req.body.id);
+  res.json(response);
+});
+
+app.delete("/friends", async (req, res) => {
+  const response = await reject(req.body.id);
   res.json(response);
 });
 

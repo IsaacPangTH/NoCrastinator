@@ -1,4 +1,5 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
+import axios from "axios";
 import {
   Avatar,
   Badge,
@@ -19,23 +20,42 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
 export default function Friends() {
-  const [friends, setFriends] = useState(
-    /* test friends, should be removed*/ ["Tom", "Jim", "Dick", "Harry", "Harvey", "Miun", "Ron"]
-  );
-  const [requests, setRequests] = useState([
-    "Tom",
-    "Jim",
-    "Dick",
-    "Harry",
-    "Harvey",
-    "Miun",
-    "Ron",
-  ]);
+  const [update, setUpdate] = useState(false);
+  const [friends, setFriends] = useState([]);
+  const [requests, setRequests] = useState([]);
   const [addFriendDialogOpen, setAddFriendDialogOpen] = useState(false);
   const handleCloseAddFriend = () => setAddFriendDialogOpen(false);
-  const handleAddFriend = () => handleCloseAddFriend();
+
+  useEffect(() => {
+    setUpdate(false);
+    const fetchData = async () => {
+      const response1 = await axios.post(
+        `${BACKEND_URL}/readrequests`,
+        { user: sessionStorage.getItem("user") },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setRequests(response1.data);
+
+      const response2 = await axios.post(
+        `${BACKEND_URL}/readfriends`,
+        { user: sessionStorage.getItem("user") },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setFriends(response2.data);
+    };
+    fetchData();
+  }, [addFriendDialogOpen, update]);
   return (
     <>
       <Box sx={{ display: "flex", justifyContent: "end" }}>
@@ -60,8 +80,9 @@ export default function Friends() {
           <AccordionDetails>
             {requests.length > 0 ? (
               <Grid container spacing={7} padding={2}>
-                {requests.map((name) => (
+                {requests.map((request) => (
                   <Grid
+                    key={request.id}
                     item
                     xs={4}
                     paddingY={2}
@@ -71,7 +92,7 @@ export default function Friends() {
                     <Box
                       sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 2 }}
                     >
-                      <Avatar /> <Typography>{name}</Typography>
+                      <Avatar /> <Typography>{request.first_name}</Typography>
                     </Box>
                     <Box
                       sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 1 }}
@@ -81,6 +102,23 @@ export default function Friends() {
                         color="success"
                         size="small"
                         sx={{ boxShadow: "none" }}
+                        onClick={async () => {
+                          try {
+                            const response = await axios.patch(
+                              `${BACKEND_URL}/friends`,
+                              { id: request.id },
+                              {
+                                headers: {
+                                  "Content-Type": "application/json",
+                                },
+                              }
+                            );
+                          } catch (error) {
+                            console.log(error);
+                            alert("Backend is down! Please try again later.");
+                          }
+                          setUpdate(true);
+                        }}
                       >
                         <CheckIcon />
                       </Fab>
@@ -89,6 +127,20 @@ export default function Friends() {
                         color="error"
                         size="small"
                         sx={{ boxShadow: "none" }}
+                        onClick={async () => {
+                          try {
+                            const response = await axios.delete(`${BACKEND_URL}/friends`, {
+                              data: { id: request.id },
+                              headers: {
+                                "Content-Type": "application/json",
+                              },
+                            });
+                          } catch (error) {
+                            console.log(error);
+                            alert("Backend is down! Please try again later.");
+                          }
+                          setUpdate(true);
+                        }}
                       >
                         <CloseIcon />
                       </Fab>
@@ -116,10 +168,10 @@ export default function Friends() {
           </AccordionSummary>
           <AccordionDetails>
             <Grid container spacing={7} padding={2}>
-              {friends.map((name) => (
-                <Grid item xs={4}>
+              {friends.map((friend) => (
+                <Grid key={friend.id} item xs={4}>
                   <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 2 }}>
-                    <Avatar /> <Typography>{name}</Typography>
+                    <Avatar /> <Typography>{friend.first_name}</Typography>
                   </Box>
                 </Grid>
               ))}
@@ -133,7 +185,24 @@ export default function Friends() {
         onClose={handleCloseAddFriend}
         PaperProps={{
           component: "form",
-          onSubmit: handleAddFriend,
+          onSubmit: async (event) => {
+            event.preventDefault();
+            try {
+              const form = new FormData(event.currentTarget);
+              const formJson = Object.fromEntries(form.entries());
+              formJson.user = sessionStorage.getItem("user");
+              const response = await axios.post(`${BACKEND_URL}/friends`, formJson, {
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              });
+              alert(response.data);
+            } catch (error) {
+              console.log(error);
+              alert("Backend is down! Please try again later.");
+            }
+            handleCloseAddFriend();
+          },
         }}
       >
         <DialogTitle>Add Friend</DialogTitle>
