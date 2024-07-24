@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const { login } = require("./accounts/login");
 const { signup } = require("./accounts/signup");
+const { readlink } = require("./accounts/readlink");
+const { editlink } = require("./accounts/editlink");
 const { readtasks } = require("./tasks/readtasks");
 const { addtask } = require("./tasks/addtask");
 const { edittask } = require("./tasks/edittask");
@@ -103,6 +105,17 @@ app.patch("/friends", async (req, res) => {
 
 app.delete("/friends", async (req, res) => {
   const response = await reject(req.body.id);
+  res.json(response);
+});
+
+// Links
+app.post("/link", async (req, res) => {
+  const response = await readlink(req.body);
+  res.json(response);
+});
+
+app.patch("/link", async (req, res) => {
+  const response = await editlink(req.body);
   res.json(response);
 });
 

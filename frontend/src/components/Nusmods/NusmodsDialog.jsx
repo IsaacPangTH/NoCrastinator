@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Box,
   TextField,
@@ -13,10 +14,30 @@ import {
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+
 export default function NusmodsDialog({ open, onClose }) {
   const [link, setLink] = useState("");
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [openInvalidInput, setOpenInvalidInput] = useState(false);
+  const [update, setUpdate] = useState(false);
+
+  useEffect(() => {
+    setUpdate(false);
+    const fetchData = async () => {
+      const response = await axios.post(
+        `${BACKEND_URL}/link`,
+        { user: sessionStorage.getItem("user") },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setLink(response.data);
+    };
+    fetchData();
+  }, [update, openInvalidInput]);
 
   const handlePaste = async () => {
     try {
@@ -27,13 +48,27 @@ export default function NusmodsDialog({ open, onClose }) {
     }
   };
 
-  const handleDelete = () => {
-    setLink("");
+  const handleDelete = async () => {
+    try {
+      const response = await axios.patch(
+        `${BACKEND_URL}/link`,
+        { user: sessionStorage.getItem("user"), link: "" },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    } catch (error) {
+      console.log(error);
+      alert("Backend is down! Please try again later.");
+    }
+    setUpdate(true);
     setDeleteOpen(false);
   };
 
   const handleCancel = () => {
-    //setLink(*link from database*);
+    setUpdate(true);
     onClose();
   };
 
@@ -44,10 +79,27 @@ export default function NusmodsDialog({ open, onClose }) {
         onClose={onClose}
         PaperProps={{
           component: "form",
-          onSubmit: (event) => {
+          onSubmit: async (event) => {
             event.preventDefault();
-            //if invalid link
-            //  setOpenInvalidInput(true)
+            if (!link.startsWith("https://nusmods.com/timetable/")) {
+              setOpenInvalidInput(true);
+            } else {
+              try {
+                const response = await axios.patch(
+                  `${BACKEND_URL}/link`,
+                  { user: sessionStorage.getItem("user"), link: link },
+                  {
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                  }
+                );
+              } catch (error) {
+                console.log(error);
+                alert("Backend is down! Please try again later.");
+              }
+            }
+            setUpdate(true);
             onClose();
           },
         }}
@@ -61,7 +113,7 @@ export default function NusmodsDialog({ open, onClose }) {
             <Box display="flex" paddingTop={2}>
               <TextField
                 autoComplete="off"
-                requried
+                required
                 disabled
                 margin="none"
                 id="link"
