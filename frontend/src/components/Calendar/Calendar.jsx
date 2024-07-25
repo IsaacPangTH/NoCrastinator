@@ -6,7 +6,7 @@ import parse from "date-fns/parse";
 import startOfWeek from "date-fns/startOfWeek";
 import getDay from "date-fns/getDay";
 import enUS from "date-fns/locale/en-US";
-import { parseISO, addMinutes } from "date-fns";
+import { parseISO, addMinutes, nextDay, addWeeks } from "date-fns";
 import { Box, Button, Typography } from "@mui/material";
 import ScheduleTaskDialog from "./ScheduleTaskDialog";
 import AddEventDialog from "./AddEventDialog";
@@ -14,6 +14,23 @@ import AddEventDialog from "./AddEventDialog";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
 const SEMESTER_MAP = { 1: "1", 2: "2", i: "3", ii: "4" };
+
+const DAY_MAP = {
+  Sunday: 0,
+  Monday: 1,
+  Tuesday: 2,
+  Wednesday: 3,
+  Thursday: 4,
+  Friday: 5,
+  Saturday: 6,
+};
+
+const SEM_START = {
+  1: new Date(2024, 7, 4),
+  2: new Date(2025, 0, 5),
+  3: new Date(2025, 4, 4),
+  4: new Date(2025, 5, 15),
+};
 
 const locales = {
   "en-US": enUS,
@@ -28,6 +45,12 @@ const localizer = dateFnsLocalizer({
 });
 
 const eventPropGetter = (event, start, end, isSelected) => {
+  if (event.nus) {
+    if (isSelected) {
+      return { style: { backgroundColor: "#c96d0a" } };
+    }
+    return { style: { backgroundColor: "#EF7C00" } };
+  }
   if (!event.task) {
     if (isSelected) {
       return { style: { backgroundColor: "#2ab02a" } };
@@ -119,8 +142,17 @@ export default function TaskCalendar() {
           });
 
           const timetable = filterTimetable(classes, semData.timetable);
-          console.log(timetable);
-          // Logic to add classes to calendar
+          timetable.map((lesson) => {
+            lesson.weeks.map((week) => {
+              const event = {};
+              event.title = `${mod} ${lesson.lessonType}`;
+              const weekStart = addWeeks(SEM_START[sem], week);
+              const date = nextDay(weekStart, DAY_MAP[lesson.day]);
+              event.startTime = parse(lesson.startTime, "HHmm", date);
+              event.endTime = parse(lesson.endTime, "HHmm", date);
+              array.push(event);
+            });
+          });
 
           setNus(array);
         });
@@ -183,6 +215,7 @@ export default function TaskCalendar() {
         start: event.startTime,
         end: event.endTime,
         task: false,
+        nus: true,
       };
     }),
   ];
