@@ -47,15 +47,15 @@ const localizer = dateFnsLocalizer({
 const eventPropGetter = (event, start, end, isSelected) => {
   if (event.nus) {
     if (isSelected) {
-      return { style: { backgroundColor: "#c96d0a" } };
+      return { style: { backgroundColor: "#c96d0a", border: "2px solid #c96d0a" } };
     }
-    return { style: { backgroundColor: "#EF7C00" } };
+    return { style: { backgroundColor: "#EF7C00", border: "2px solid #EF7C00" } };
   }
   if (!event.task) {
     if (isSelected) {
-      return { style: { backgroundColor: "#2ab02a" } };
+      return { style: { backgroundColor: "#2ab02a", border: "2px solid #2ab02a" } };
     }
-    return { style: { backgroundColor: "limeGreen" } };
+    return { style: { backgroundColor: "limeGreen", border: "2px solid limeGreen" } };
   }
   if (event.isCompleted) {
     return {
