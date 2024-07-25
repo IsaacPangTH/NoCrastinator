@@ -37,7 +37,7 @@ export default function ScheduleTaskDialog(props) {
   useEffect(() => {
     const fetchData = async () => {
       const response = await axios.post(
-        `${BACKEND_URL}/readtask`,
+        `${BACKEND_URL}/readtasks`,
         { user: sessionStorage.getItem("user") },
         {
           headers: {
