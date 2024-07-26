@@ -45,26 +45,29 @@ const localizer = dateFnsLocalizer({
 });
 
 const eventPropGetter = (event, start, end, isSelected) => {
+  const style = {};
   if (event.nus) {
     if (isSelected) {
-      return { style: { backgroundColor: "#c96d0a", border: "2px solid #c96d0a" } };
+      style.backgroundColor = "#c96d0a";
+      style.border = "1px solid #c96d0a";
+    } else {
+      style.backgroundColor = "#EF7C00";
+      style.border = "1px solid #FFF";
     }
-    return { style: { backgroundColor: "#EF7C00", border: "2px solid #EF7C00" } };
-  }
-  if (!event.task) {
+  } else if (!event.task) {
     if (isSelected) {
-      return { style: { backgroundColor: "#2ab02a", border: "2px solid #2ab02a" } };
+      style.backgroundColor = "#2ab02a";
+      style.border = "1px solid #2ab02a";
+    } else {
+      style.backgroundColor = "limeGreen";
+      style.border = "1px solid #FFF";
     }
-    return { style: { backgroundColor: "limeGreen", border: "2px solid limeGreen" } };
   }
   if (event.isCompleted) {
-    return {
-      style: {
-        textDecoration: "line-through",
-        backgroundColor: isSelected ? "#a1b3c9" : "LightSteelBlue",
-      },
-    };
+    style.textDecoration = "line-through";
+    style.backgroundColor = isSelected ? "#a1b3c9" : "LightSteelBlue";
   }
+  return { style: style };
 };
 
 export default function TaskCalendar() {
