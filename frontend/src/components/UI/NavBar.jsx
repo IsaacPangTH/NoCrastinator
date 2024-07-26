@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import AppBar from "@mui/material/AppBar";
@@ -16,6 +16,7 @@ import LeaderboardOutlinedIcon from "@mui/icons-material/LeaderboardOutlined";
 import { useNavigate } from "react-router-dom";
 import { Avatar, Button, Menu, MenuItem } from "@mui/material";
 import NoCrastinatorLogoWhite from "../../assets/NoCrastinatorWhite.png";
+import NusmodsDialog from "../Nusmods/NusmodsDialog";
 
 const drawerWidth = 100;
 
@@ -47,14 +48,7 @@ function NavbarButton({ icon, text, link }) {
 }
 
 export default function NavBar({ children, p = 3 }) {
-  const navigate = useNavigate();
-  const handleLogout = () => {
-    alert("Logout successful!");
-    navigate("../");
-    sessionStorage.removeItem("user");
-    sessionStorage.removeItem("name");
-  };
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const openAccountMenu = Boolean(anchorEl);
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -62,6 +56,16 @@ export default function NavBar({ children, p = 3 }) {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    alert("Logout successful!");
+    navigate("../");
+    sessionStorage.removeItem("user");
+    sessionStorage.removeItem("name");
+  };
+
+  const [nusmodsOpen, setNusmodsOpen] = useState(false);
 
   return (
     <>
@@ -158,13 +162,15 @@ export default function NavBar({ children, p = 3 }) {
       >
         <MenuItem
           onClick={() => {
+            setNusmodsOpen(true);
             handleMenuClose();
           }}
         >
-          Canvas Integration
+          Sync NUSMods
         </MenuItem>
         <MenuItem onClick={handleLogout}>Log Out</MenuItem>
       </Menu>
+      <NusmodsDialog open={nusmodsOpen} onClose={() => setNusmodsOpen(false)} />
     </>
   );
 }
