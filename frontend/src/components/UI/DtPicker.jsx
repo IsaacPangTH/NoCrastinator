@@ -1,9 +1,10 @@
 import React from "react";
 import {
   LocalizationProvider,
-  MobileDateTimePicker,
+  DateTimePicker,
   DatePicker,
   TimePicker,
+  renderTimeViewClock,
 } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 
@@ -11,13 +12,18 @@ export default function DtPicker({ type, label, id, name, value, onChange, onCle
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       {type === "DateTime" && (
-        <MobileDateTimePicker
-          orientation="landscape"
+        <DateTimePicker
           label={label}
           id={id}
           name={name}
           value={value}
           onChange={onChange}
+          ampm={false}
+          viewRenderers={{
+            hours: renderTimeViewClock,
+            minutes: renderTimeViewClock,
+            seconds: renderTimeViewClock,
+          }}
           slotProps={{
             textField: {
               required: required,
@@ -50,6 +56,12 @@ export default function DtPicker({ type, label, id, name, value, onChange, onCle
           name={name}
           value={value}
           onChange={onChange}
+          ampm={false}
+          viewRenderers={{
+            hours: renderTimeViewClock,
+            minutes: renderTimeViewClock,
+            seconds: renderTimeViewClock,
+          }}
           slotProps={{
             textField: {
               required: { required },

@@ -15,19 +15,26 @@ import { isAfter } from "date-fns";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
-export default function AddEventDialog(props) {
-  const { open, onClose } = props;
-  const [startDateTime, setStartDateTime] = useState(null);
-  const [endDateTime, setEndDateTime] = useState(null);
+export default function EditEventDialog(props) {
+  const { open, onClose, event } = props;
+  const [startDateTime, setStartDateTime] = useState(event.start);
+  const [endDateTime, setEndDateTime] = useState(event.end);
   const [openInvalidInput, setOpenInvalidInput] = useState(false);
+
+  useEffect(() => {
+    if (event) {
+      setStartDateTime(event.start);
+      setEndDateTime(event.end);
+    }
+  }, [event]);
 
   const handleChangeStart = (newValue) => setStartDateTime(newValue);
   const handleChangeEnd = (newValue) => setEndDateTime(newValue);
 
   const handleClose = () => {
     onClose();
-    setStartDateTime(null);
-    setEndDateTime(null);
+    setStartDateTime(event.start);
+    setEndDateTime(event.end);
   };
 
   return (
@@ -46,25 +53,13 @@ export default function AddEventDialog(props) {
             ) {
               setOpenInvalidInput(true);
             } else {
-              try {
-                const form = new FormData(event.currentTarget);
-                const formJson = Object.fromEntries(form.entries());
-                formJson.user = sessionStorage.getItem("user");
-                const response = await axios.post(`${BACKEND_URL}/events`, formJson, {
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                });
-              } catch (error) {
-                console.log(error);
-                alert("Backend is down! Please try again later.");
-              }
+              //submit stuff
               handleClose();
             }
           },
         }}
       >
-        <DialogTitle>Add Event</DialogTitle>
+        <DialogTitle>Edit Event</DialogTitle>
         <DialogContent>
           <Stack spacing={3} width={300}>
             <TextField
@@ -78,6 +73,7 @@ export default function AddEventDialog(props) {
               type="text"
               fullWidth
               variant="standard"
+              defaultValue={event.title}
             />
             <DtPicker
               type="DateTime"
@@ -103,7 +99,7 @@ export default function AddEventDialog(props) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button type="submit">Add event</Button>
+          <Button type="submit">Edit event</Button>
         </DialogActions>
       </Dialog>
       <Snackbar

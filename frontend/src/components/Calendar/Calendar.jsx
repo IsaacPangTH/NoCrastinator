@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import format from "date-fns/format";
@@ -10,6 +10,7 @@ import { parseISO, addMinutes, nextDay, addWeeks } from "date-fns";
 import { Box, Button, Typography } from "@mui/material";
 import ScheduleTaskDialog from "./ScheduleTaskDialog";
 import AddEventDialog from "./AddEventDialog";
+import EditEventDialog from "./EditEventDialog";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
@@ -76,6 +77,8 @@ export default function TaskCalendar() {
   const [events, setEvents] = useState([]);
   const [scheduleTaskDialogOpen, setScheduleTaskDialogOpen] = useState(false);
   const [addEventDialogOpen, setAddEventDialogOpen] = useState(false);
+  const [editEventTarget, setEditEventTarget] = useState();
+  const [editEventOpen, setEditEventOpen] = useState(false);
 
   function handleOpenScheduleTaskDialog() {
     setScheduleTaskDialogOpen(true);
@@ -88,6 +91,12 @@ export default function TaskCalendar() {
   }
   function handleCloseAddEventDialog() {
     setAddEventDialogOpen(false);
+  }
+  function handleOpenEditEvent() {
+    setEditEventOpen(true);
+  }
+  function handleCloseEditEvent() {
+    setEditEventOpen(false);
   }
 
   useEffect(() => {
@@ -190,6 +199,14 @@ export default function TaskCalendar() {
     fetchData();
   }, [scheduleTaskDialogOpen, addEventDialogOpen]);
 
+  const onDoubleClickEvent = (calEvent) => {
+    if (calEvent.nus || calEvent.task) {
+      return null;
+    }
+    setEditEventTarget(calEvent);
+    handleOpenEditEvent();
+  };
+
   const calendarEvents = [
     ...tasks
       .filter((task) => task.startTime !== null && task.endTime !== null)
@@ -206,6 +223,7 @@ export default function TaskCalendar() {
       }),
     ...events.map((event) => {
       return {
+        id: event.id,
         title: event.title,
         start: parseISO(event.startTime),
         end: parseISO(event.endTime),
@@ -246,10 +264,16 @@ export default function TaskCalendar() {
           formats={{
             eventTimeRangeFormat: ({ start, end }, culture, localizer) => "",
           }}
+          onDoubleClickEvent={onDoubleClickEvent}
         />
       </Box>
       <ScheduleTaskDialog open={scheduleTaskDialogOpen} onClose={handleCloseScheduleTaskDialog} />
       <AddEventDialog open={addEventDialogOpen} onClose={handleCloseAddEventDialog} />
+      <EditEventDialog
+        open={editEventOpen}
+        onClose={handleCloseEditEvent}
+        event={editEventTarget}
+      />
     </>
   );
 }
