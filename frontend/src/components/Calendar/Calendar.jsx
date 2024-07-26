@@ -77,7 +77,7 @@ export default function TaskCalendar() {
   const [events, setEvents] = useState([]);
   const [scheduleTaskDialogOpen, setScheduleTaskDialogOpen] = useState(false);
   const [addEventDialogOpen, setAddEventDialogOpen] = useState(false);
-  const [editEventTarget, setEditEventTarget] = useState();
+  const [editEventTarget, setEditEventTarget] = useState({});
   const [editEventOpen, setEditEventOpen] = useState(false);
 
   function handleOpenScheduleTaskDialog() {
