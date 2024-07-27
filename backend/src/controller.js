@@ -4,6 +4,7 @@ const { login } = require("./accounts/login");
 const { signup } = require("./accounts/signup");
 const { readlink } = require("./accounts/readlink");
 const { editlink } = require("./accounts/editlink");
+const { nusmods } = require("./accounts/nusmods");
 const { readtasks } = require("./tasks/readtasks");
 const { addtask } = require("./tasks/addtask");
 const { edittask } = require("./tasks/edittask");
@@ -122,6 +123,12 @@ app.post("/link", async (req, res) => {
 
 app.patch("/link", async (req, res) => {
   const response = await editlink(req.body);
+  res.json(response);
+});
+
+// Nusmods
+app.post("/nusmods", async (req, res) => {
+  const response = await nusmods(req.body);
   res.json(response);
 });
 

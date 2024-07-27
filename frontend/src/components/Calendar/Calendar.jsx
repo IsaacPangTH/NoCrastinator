@@ -1,4 +1,4 @@
-import { React, useState, useEffect, useCallback } from "react";
+import { React, useState, useEffect } from "react";
 import axios from "axios";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import format from "date-fns/format";
@@ -6,32 +6,13 @@ import parse from "date-fns/parse";
 import startOfWeek from "date-fns/startOfWeek";
 import getDay from "date-fns/getDay";
 import enUS from "date-fns/locale/en-US";
-import { parseISO, addMinutes, nextDay, addWeeks } from "date-fns";
+import { parseISO } from "date-fns";
 import { Box, Button, Typography } from "@mui/material";
 import ScheduleTaskDialog from "./ScheduleTaskDialog";
 import AddEventDialog from "./AddEventDialog";
 import EditEventDialog from "./EditEventDialog";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
-
-const SEMESTER_MAP = { 1: "1", 2: "2", i: "3", ii: "4" };
-
-const DAY_MAP = {
-  Sunday: 0,
-  Monday: 1,
-  Tuesday: 2,
-  Wednesday: 3,
-  Thursday: 4,
-  Friday: 5,
-  Saturday: 6,
-};
-
-const SEM_START = {
-  1: new Date(2024, 7, 4),
-  2: new Date(2025, 0, 5),
-  3: new Date(2025, 4, 4),
-  4: new Date(2025, 5, 15),
-};
 
 const locales = {
   "en-US": enUS,
@@ -100,19 +81,9 @@ export default function TaskCalendar() {
   }
 
   useEffect(() => {
-    const filterTimetable = (classes, timetable) => {
-      return timetable.filter((obj) => {
-        for (const [type, no] of Object.entries(classes)) {
-          if (obj.lessonType.substring(0, 3).toUpperCase() == type && obj.classNo == no) {
-            return true;
-          }
-        }
-        return false;
-      });
-    };
     const getNus = async () => {
       const response = await axios.post(
-        `${BACKEND_URL}/link`,
+        `${BACKEND_URL}/nusmods`,
         { user: sessionStorage.getItem("user") },
         {
           headers: {
@@ -120,54 +91,7 @@ export default function TaskCalendar() {
           },
         }
       );
-      const link = response.data;
-      const array = [];
-      const sem = SEMESTER_MAP[link.split("-")[1].split("/")[0]];
-      link
-        .split("?")[1]
-        .split("&")
-        .map(async (el) => {
-          const split1 = el.split("=");
-
-          const mod = split1[0];
-
-          const response = await axios.get(
-            `https://api.nusmods.com/v2/2024-2025/modules/${mod}.json`
-          );
-          const semData = response.data.semesterData.filter((obj) => obj.semester == sem)[0];
-
-          if (semData.examDate && semData.examDuration) {
-            const exam = {};
-            exam.title = `${mod} Final Exam`;
-            exam.startTime = new Date(semData.examDate);
-            exam.endTime = addMinutes(semData.examDate, semData.examDuration);
-            array.push(exam);
-          }
-
-          const classes = {};
-          split1[1].split(",").map((el) => {
-            if (el == "") {
-              return;
-            }
-            const split2 = el.split(":");
-            classes[split2[0]] = split2[1];
-          });
-
-          const timetable = filterTimetable(classes, semData.timetable);
-          timetable.map((lesson) => {
-            lesson.weeks.map((week) => {
-              const event = {};
-              event.title = `${mod} ${lesson.lessonType}`;
-              const weekStart = addWeeks(SEM_START[sem], week);
-              const date = nextDay(weekStart, DAY_MAP[lesson.day]);
-              event.startTime = parse(lesson.startTime, "HHmm", date);
-              event.endTime = parse(lesson.endTime, "HHmm", date);
-              array.push(event);
-            });
-          });
-
-          setNus(array);
-        });
+      setNus(response.data);
     };
     getNus();
   }, []);
@@ -233,8 +157,8 @@ export default function TaskCalendar() {
     ...nus.map((event) => {
       return {
         title: event.title,
-        start: event.startTime,
-        end: event.endTime,
+        start: parseISO(event.startTime),
+        end: parseISO(event.endTime),
         task: false,
         nus: true,
       };
