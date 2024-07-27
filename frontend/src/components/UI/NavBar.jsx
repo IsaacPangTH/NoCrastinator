@@ -88,7 +88,7 @@ export default function NavBar({ children, p = 3 }) {
                   NoCrastinator
                 </Typography>
               </Box>
-              <Button onClick={handleMenuClick} color="white">
+              <Button onClick={handleMenuClick} color="inherit">
                 <Box
                   sx={{
                     display: "flex",
