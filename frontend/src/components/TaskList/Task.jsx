@@ -31,7 +31,6 @@ export default function Task({
   handleEdit,
   handleAddSchedule,
   handleDelete,
-  completed,
   start,
   end,
   className = "task",
@@ -72,7 +71,7 @@ export default function Task({
     <>
       <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", width: "100%" }}>
         <IconButton onClick={() => handleComplete(id)}>
-          {completed ? <CheckCircleIcon /> : <CircleOutlinedIcon />}
+          <CircleOutlinedIcon />
         </IconButton>
         <Box
           sx={{
@@ -83,12 +82,7 @@ export default function Task({
             justifyContent: "space-around",
           }}
         >
-          <Typography
-            fontSize="large"
-            sx={completed ? { textDecoration: "line-through", color: "#818181" } : null}
-          >
-            {title}
-          </Typography>
+          <Typography fontSize="large">{title}</Typography>
         </Box>
 
         {start && end && (

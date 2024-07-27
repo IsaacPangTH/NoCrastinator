@@ -233,6 +233,17 @@ export default function Tasks() {
   );
 
   function makeTask(task) {
+    if (task.completed) {
+      return (
+        <CompletedTask
+          id={task.id}
+          title={task.title}
+          handleComplete={handleComplete}
+          handleDelete={handleDelete}
+          completed={task.isCompleted}
+        />
+      );
+    }
     if (task.dueDate === undefined) {
       return (
         <Task
