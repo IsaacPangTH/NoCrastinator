@@ -15,8 +15,8 @@ import MenuItem from "@mui/material/MenuItem";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { LocalizationProvider, MobileDateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
-import { parse, formatISO, parseISO, isBefore, isFuture } from "date-fns";
-import { Snackbar, TextField } from "@mui/material";
+import { parse, formatISO, parseISO, isBefore, isFuture, format } from "date-fns";
+import { Card, Chip, Divider, Snackbar, TextField } from "@mui/material";
 import { TimePicker } from "@mui/x-date-pickers";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
@@ -33,6 +33,8 @@ export default function DueDateTimeTask({
   completed,
   dueDate = "",
   dueTime = "",
+  start,
+  end,
   className = "task",
 }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -153,10 +155,38 @@ export default function DueDateTimeTask({
             {title}
           </Typography>
 
-          <Typography variant="caption" color={isFuture(parseISO(dueDate)) ? "black" : "red"}>
-            Due: {dueDate + " at " + dueTime}
-          </Typography>
+          <Chip
+            label={"Due: " + format(dueDate + "T" + dueTime, "do MMM yyyy, HH:mm")}
+            color={isFuture(parseISO(dueDate + "T" + dueTime)) ? "primary" : "error"}
+            size="small"
+          />
         </Box>
+
+        {start && end && (
+          <Box paddingX={3} paddingY={0.5}>
+            <Card
+              variant="outlined"
+              sx={{
+                backgroundColor: "#1976D2",
+                color: "#FFF",
+                display: "flex",
+                alignItems: "center",
+                borderRadius: 3,
+              }}
+            >
+              <Typography variant="body2" paddingX={1}>
+                Scheduled
+              </Typography>
+              <Divider orientation="vertical" flexItem sx={{ backgroundColor: "#FFF" }} />
+              <Box display="flex" flexDirection="column" paddingX={1} alignItems="end">
+                <Typography variant="body2">
+                  Start: {format(start, "do MMM yyyy, HH:mm")}
+                </Typography>{" "}
+                <Typography variant="body2">End: {format(end, "do MMM yyyy, HH:mm")}</Typography>
+              </Box>
+            </Card>
+          </Box>
+        )}
 
         <IconButton
           id={"menu-button-" + id}

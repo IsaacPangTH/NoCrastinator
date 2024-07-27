@@ -243,6 +243,8 @@ export default function Tasks() {
           handleAddSchedule={handleAddSchedule}
           handleDelete={handleDelete}
           completed={task.isCompleted}
+          start={task.startTime}
+          end={task.endTime}
         />
       );
     }
@@ -257,6 +259,8 @@ export default function Tasks() {
           handleDelete={handleDelete}
           completed={task.isCompleted}
           dueDate={task.dueDate}
+          start={task.startTime}
+          end={task.endTime}
         />
       );
     }
@@ -271,6 +275,8 @@ export default function Tasks() {
         completed={task.isCompleted}
         dueDate={task.dueDate}
         dueTime={task.dueTime}
+        start={task.startTime}
+        end={task.endTime}
       />
     );
   }

@@ -15,8 +15,8 @@ import MenuItem from "@mui/material/MenuItem";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { LocalizationProvider, MobileDateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
-import { formatISO, isBefore } from "date-fns";
-import { Snackbar, TextField } from "@mui/material";
+import { formatISO, isBefore, format } from "date-fns";
+import { Card, Divider, Snackbar, TextField } from "@mui/material";
 import { TimePicker } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -32,6 +32,8 @@ export default function Task({
   handleAddSchedule,
   handleDelete,
   completed,
+  start,
+  end,
   className = "task",
 }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -68,68 +70,6 @@ export default function Task({
   };
   return (
     <>
-      <Dialog
-        open={editTaskDialogOpen}
-        onClose={handleCloseEditTask}
-        PaperProps={{
-          component: "form",
-          onSubmit: (event) => {
-            event.preventDefault();
-            handleCloseEditTask();
-            handleEdit(event);
-          },
-        }}
-      >
-        <DialogTitle>Edit Task</DialogTitle>
-        <DialogContent>
-          <Stack spacing={3}>
-            <input type="hidden" name="id" value={id} />
-            <TextField
-              autoFocus
-              autoComplete="off"
-              required
-              margin="dense"
-              defaultValue={title}
-              id="title"
-              name="title"
-              label="Task"
-              type="text"
-              fullWidth
-              variant="standard"
-            />
-            <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale={navigator.language}>
-              <DatePicker
-                label="Due Date (optional)"
-                id="dueDate"
-                name="dueDate"
-                slotProps={{
-                  field: { clearable: true, onClear: () => setEditTaskDueDateSelected(false) },
-                }}
-                format="yyyy-LL-dd"
-                onChange={() => setEditTaskDueDateSelected(true)}
-              />
-              {editTaskDueDateSelected && (
-                <TimePicker
-                  label="Time Due (optional)"
-                  id="dueTime"
-                  name="dueTime"
-                  viewRenderers={{
-                    hours: renderTimeViewClock,
-                    minutes: renderTimeViewClock,
-                    seconds: renderTimeViewClock,
-                  }}
-                  slotProps={{ field: { clearable: true } }}
-                  format="HH:mm"
-                />
-              )}
-            </LocalizationProvider>
-          </Stack>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseEditTask}>Cancel</Button>
-          <Button type="submit">Edit Task</Button>
-        </DialogActions>
-      </Dialog>
       <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", width: "100%" }}>
         <IconButton onClick={() => handleComplete(id)}>
           {completed ? <CheckCircleIcon /> : <CircleOutlinedIcon />}
@@ -150,6 +90,32 @@ export default function Task({
             {title}
           </Typography>
         </Box>
+
+        {start && end && (
+          <Box paddingX={3} paddingY={0.5}>
+            <Card
+              variant="outlined"
+              sx={{
+                backgroundColor: "#1976D2",
+                color: "#FFF",
+                display: "flex",
+                alignItems: "center",
+                borderRadius: 3,
+              }}
+            >
+              <Typography variant="body2" paddingX={1}>
+                Scheduled
+              </Typography>
+              <Divider orientation="vertical" flexItem sx={{ backgroundColor: "#FFF" }} />
+              <Box display="flex" flexDirection="column" paddingX={1} alignItems="end">
+                <Typography variant="body2">
+                  Start: {format(start, "do MMM yyyy, HH:mm")}
+                </Typography>{" "}
+                <Typography variant="body2">End: {format(end, "do MMM yyyy, HH:mm")}</Typography>
+              </Box>
+            </Card>
+          </Box>
+        )}
 
         <IconButton
           id={"menu-button-" + id}
@@ -195,6 +161,7 @@ export default function Task({
           </MenuItem>
         </Menu>
       </Box>
+
       <Dialog
         open={scheduleTaskDialogOpen}
         onClose={handleCloseScheduleDialog}
@@ -265,6 +232,69 @@ export default function Task({
         onClose={() => setOpenInvalidStartEndTime(false)}
         message="Set valid start and end times"
       />
+
+      <Dialog
+        open={editTaskDialogOpen}
+        onClose={handleCloseEditTask}
+        PaperProps={{
+          component: "form",
+          onSubmit: (event) => {
+            event.preventDefault();
+            handleCloseEditTask();
+            handleEdit(event);
+          },
+        }}
+      >
+        <DialogTitle>Edit Task</DialogTitle>
+        <DialogContent>
+          <Stack spacing={3}>
+            <input type="hidden" name="id" value={id} />
+            <TextField
+              autoFocus
+              autoComplete="off"
+              required
+              margin="dense"
+              defaultValue={title}
+              id="title"
+              name="title"
+              label="Task"
+              type="text"
+              fullWidth
+              variant="standard"
+            />
+            <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale={navigator.language}>
+              <DatePicker
+                label="Due Date (optional)"
+                id="dueDate"
+                name="dueDate"
+                slotProps={{
+                  field: { clearable: true, onClear: () => setEditTaskDueDateSelected(false) },
+                }}
+                format="yyyy-LL-dd"
+                onChange={() => setEditTaskDueDateSelected(true)}
+              />
+              {editTaskDueDateSelected && (
+                <TimePicker
+                  label="Time Due (optional)"
+                  id="dueTime"
+                  name="dueTime"
+                  viewRenderers={{
+                    hours: renderTimeViewClock,
+                    minutes: renderTimeViewClock,
+                    seconds: renderTimeViewClock,
+                  }}
+                  slotProps={{ field: { clearable: true } }}
+                  format="HH:mm"
+                />
+              )}
+            </LocalizationProvider>
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseEditTask}>Cancel</Button>
+          <Button type="submit">Edit Task</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
