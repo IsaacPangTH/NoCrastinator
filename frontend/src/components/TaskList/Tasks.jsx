@@ -3,6 +3,7 @@ import axios from "axios";
 import Task from "./Task";
 import DueDateTask from "./DueDateTask";
 import DueDateTimeTask from "./DueDateTimeTask";
+import CompletedTask from "./CompletedTask";
 import {
   Button,
   Dialog,
@@ -233,17 +234,6 @@ export default function Tasks() {
   );
 
   function makeTask(task) {
-    if (task.completed) {
-      return (
-        <CompletedTask
-          id={task.id}
-          title={task.title}
-          handleComplete={handleComplete}
-          handleDelete={handleDelete}
-          completed={task.isCompleted}
-        />
-      );
-    }
     if (task.dueDate === undefined) {
       return (
         <Task
@@ -298,12 +288,10 @@ export default function Tasks() {
       .map((task) => (
         <React.Fragment key={task.id}>
           <ListItem key={task.id}>
-            <Task
+            <CompletedTask
               id={task.id}
               title={task.title}
               handleComplete={handleComplete}
-              handleEdit={handleEdit}
-              handleAddSchedule={handleAddSchedule}
               handleDelete={handleDelete}
               completed={task.isCompleted}
             />
