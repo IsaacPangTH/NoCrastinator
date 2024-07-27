@@ -12,6 +12,7 @@ const { patchcompleted } = require("./tasks/patchcompleted");
 const { schedule } = require("./tasks/schedule");
 const { readevents } = require("./events/readevents");
 const { addevent } = require("./events/addevent");
+const { editevent } = require("./events/editevent");
 const { readfriends } = require("./friends/readfriends");
 const { readrequests } = require("./friends/readrequests");
 const { addfriend } = require("./friends/addfriend");
@@ -79,6 +80,11 @@ app.post("/readevents", async (req, res) => {
 
 app.post("/events", async (req, res) => {
   const response = await addevent(req.body);
+  res.json(response);
+});
+
+app.patch("/events", async (req, res) => {
+  const response = await editevent(req.body);
   res.json(response);
 });
 

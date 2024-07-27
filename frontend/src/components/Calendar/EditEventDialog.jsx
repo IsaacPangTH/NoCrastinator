@@ -44,8 +44,8 @@ export default function EditEventDialog(props) {
         onClose={handleClose}
         PaperProps={{
           component: "form",
-          onSubmit: async (event) => {
-            event.preventDefault();
+          onSubmit: async (e) => {
+            e.preventDefault();
             if (
               startDateTime === null ||
               endDateTime === null ||
@@ -53,7 +53,19 @@ export default function EditEventDialog(props) {
             ) {
               setOpenInvalidInput(true);
             } else {
-              //submit stuff
+              try {
+                const form = new FormData(e.currentTarget);
+                const formJson = Object.fromEntries(form.entries());
+                formJson.id = event.id;
+                const response = await axios.patch(`${BACKEND_URL}/events`, formJson, {
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                });
+              } catch (error) {
+                console.log(error);
+                alert("Backend is down! Please try again later.");
+              }
               handleClose();
             }
           },

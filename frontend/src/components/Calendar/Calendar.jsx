@@ -77,7 +77,7 @@ export default function TaskCalendar() {
   const [events, setEvents] = useState([]);
   const [scheduleTaskDialogOpen, setScheduleTaskDialogOpen] = useState(false);
   const [addEventDialogOpen, setAddEventDialogOpen] = useState(false);
-  const [editEventTarget, setEditEventTarget] = useState({});
+  const [editEventTarget, setEditEventTarget] = useState({ start: null, end: null });
   const [editEventOpen, setEditEventOpen] = useState(false);
 
   function handleOpenScheduleTaskDialog() {
@@ -197,7 +197,7 @@ export default function TaskCalendar() {
       setEvents(response2.data);
     };
     fetchData();
-  }, [scheduleTaskDialogOpen, addEventDialogOpen]);
+  }, [scheduleTaskDialogOpen, addEventDialogOpen, editEventOpen]);
 
   const onDoubleClickEvent = (calEvent) => {
     if (calEvent.nus || calEvent.task) {
