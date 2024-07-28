@@ -11,6 +11,7 @@ const { edittask } = require("./tasks/edittask");
 const { deletetask } = require("./tasks/deletetask");
 const { patchcompleted } = require("./tasks/patchcompleted");
 const { schedule } = require("./tasks/schedule");
+const { leaderboard } = require("./tasks/leaderborad");
 const { readevents } = require("./events/readevents");
 const { addevent } = require("./events/addevent");
 const { editevent } = require("./events/editevent");
@@ -129,6 +130,12 @@ app.patch("/link", async (req, res) => {
 // Nusmods
 app.post("/nusmods", async (req, res) => {
   const response = await nusmods(req.body);
+  res.json(response);
+});
+
+// Leaderboard
+app.post("/leaderboard", async (req, res) => {
+  const response = await leaderboard(req.body);
   res.json(response);
 });
 
