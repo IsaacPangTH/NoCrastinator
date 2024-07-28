@@ -1,16 +1,34 @@
-import { react, useState } from "react";
+import { react, useState, useEffect } from "react";
+import axios from "axios";
 import { Avatar, Box, List, ListItem, Typography } from "@mui/material";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
 export default function Leaderboard() {
-  const [friends, setFriends] = useState([{ name: "John", points: 100, user: 1 }]);
-  const sortedFriends = friends.toSorted();
+  const [friends, setFriends] = useState([]);
+  const sortedFriends = friends.toSorted((a, b) => b.points - a.points);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await axios.post(
+        `${BACKEND_URL}/leaderboard`,
+        { user: sessionStorage.getItem("user") },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setFriends(response.data);
+    };
+    fetchData();
+  }, []);
 
   return (
     <>
       <List>
         {sortedFriends.map((friend) => {
           return (
-            <ListItem key={friend.user} sx={{ width: "100%" }}>
+            <ListItem key={friend.id} sx={{ width: "100%" }}>
               <Box
                 sx={{
                   display: "flex",
