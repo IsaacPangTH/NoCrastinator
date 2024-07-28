@@ -43,6 +43,9 @@ const nusmods = async (data) => {
   try {
     const res = await client.query(`SELECT link FROM accounts WHERE id=$1`, [data.user]);
     const link = res.rows[0].link;
+    if (link == "") {
+      return [];
+    }
     const array = [];
     const sem = SEMESTER_MAP[link.split("-")[1].split("/")[0]];
     const splitHidden = link.split("?")[1].split("&hidden=");
