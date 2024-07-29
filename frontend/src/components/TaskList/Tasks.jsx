@@ -145,7 +145,7 @@ export default function Tasks() {
         if (incomplete[0]) {
           title = `You still have tasks to do`;
           const due = incomplete[0].dueTime
-            ? `hich is due on ${incomplete[0].dueDate}, ${incomplete[0].dueTime}`
+            ? `which is due on ${incomplete[0].dueDate}, ${incomplete[0].dueTime}`
             : incomplete[0].dueDate
             ? `which is due on ${incomplete[0].dueDate}`
             : "which has no deadline";
