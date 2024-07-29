@@ -63,6 +63,7 @@ export default function NavBar({ children, p = 3 }) {
     navigate("../");
     sessionStorage.removeItem("user");
     sessionStorage.removeItem("name");
+    sessionStorage.removeItem("notification")
   };
 
   const [nusmodsOpen, setNusmodsOpen] = useState(false);
