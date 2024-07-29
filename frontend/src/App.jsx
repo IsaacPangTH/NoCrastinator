@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import SignIn from "./pages/SignIn";
@@ -9,6 +9,16 @@ import FriendsList from "./pages/FriendsList";
 import LeaderboardPage from "./pages/LeaderboardPage";
 import Home from "./pages/Home";
 function App() {
+  const [permission, setPermission] = useState(Notification.permission);
+
+  useEffect(() => {
+    if (permission === "default") {
+      Notification.requestPermission().then((result) => {
+        setPermission(result);
+      });
+    }
+  }, [permission]);
+
   return (
     <BrowserRouter>
       <Routes>

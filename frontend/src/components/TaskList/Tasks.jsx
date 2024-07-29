@@ -25,6 +25,7 @@ import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
+import NoCrastinatorLogo from "../../assets/NoCrastinatorLogo.png";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
@@ -36,7 +37,7 @@ export default function Tasks() {
 
   const handleComplete = async (id) => {
     try {
-      const response = await axios.patch(
+      await axios.patch(
         `${BACKEND_URL}/completed`,
         { id: id },
         {
@@ -55,7 +56,7 @@ export default function Tasks() {
     try {
       const form = new FormData(event.currentTarget);
       const formJson = Object.fromEntries(form.entries());
-      const response = await axios.patch(`${BACKEND_URL}/tasks`, formJson, {
+      await axios.patch(`${BACKEND_URL}/tasks`, formJson, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -137,6 +138,28 @@ export default function Tasks() {
           },
         }
       );
+      if (Notification.permission === "granted" && !sessionStorage.getItem("notification")) {
+        const incomplete = response.data.filter((el) => !el.isCompleted);
+        let title = "";
+        let body = "";
+        if (incomplete[0]) {
+          title = `You still have tasks to do`;
+          const due = incomplete[0].dueTime
+            ? `hich is due on ${incomplete[0].dueDate}, ${incomplete[0].dueTime}`
+            : incomplete[0].dueDate
+            ? `which is due on ${incomplete[0].dueDate}`
+            : "which has no deadline";
+          body = `The most urgent is ${incomplete[0].title} ${due}`;
+        } else {
+          title = "You have no more tasks";
+          body = "Add more tasks or take a break!";
+        }
+        new Notification(title, {
+          body: body,
+          icon: NoCrastinatorLogo,
+        });
+        sessionStorage.setItem("notification", true);
+      }
       setTasks(response.data);
     };
     fetchData();
