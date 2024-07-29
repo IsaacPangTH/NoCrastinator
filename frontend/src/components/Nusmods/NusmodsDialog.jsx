@@ -50,7 +50,7 @@ export default function NusmodsDialog({ open, onClose }) {
 
   const handleDelete = async () => {
     try {
-      const response = await axios.patch(
+      await axios.patch(
         `${BACKEND_URL}/link`,
         { user: sessionStorage.getItem("user"), link: "" },
         {

@@ -57,7 +57,7 @@ export default function EditEventDialog(props) {
                 const form = new FormData(e.currentTarget);
                 const formJson = Object.fromEntries(form.entries());
                 formJson.id = event.id;
-                const response = await axios.patch(`${BACKEND_URL}/events`, formJson, {
+                await axios.patch(`${BACKEND_URL}/events`, formJson, {
                   headers: {
                     "Content-Type": "application/json",
                   },

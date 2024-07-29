@@ -7,8 +7,6 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
-
 export default function Task({ id, title, handleComplete, handleDelete, className = "task" }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
 

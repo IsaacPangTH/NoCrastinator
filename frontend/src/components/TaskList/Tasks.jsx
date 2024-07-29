@@ -69,7 +69,7 @@ export default function Tasks() {
 
   const handleAddSchedule = async (obj) => {
     try {
-      const response = await axios.patch(`${BACKEND_URL}/schedule`, obj, {
+      await axios.patch(`${BACKEND_URL}/schedule`, obj, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -83,7 +83,7 @@ export default function Tasks() {
 
   const handleDelete = async (id) => {
     try {
-      const response = await axios.delete(`${BACKEND_URL}/tasks`, {
+      await axios.delete(`${BACKEND_URL}/tasks`, {
         data: { id: id },
         headers: {
           "Content-Type": "application/json",
@@ -103,7 +103,7 @@ export default function Tasks() {
       const formJson = Object.fromEntries(form.entries());
       formJson.user = sessionStorage.getItem("user");
       formJson.isCompleted = false;
-      const response = await axios.post(`${BACKEND_URL}/tasks`, formJson, {
+      await axios.post(`${BACKEND_URL}/tasks`, formJson, {
         headers: {
           "Content-Type": "application/json",
         },

@@ -7,7 +7,6 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import NoCrastinatorLogo from "../assets/NoCrastinatorLogo.png";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -76,11 +75,6 @@ export default function SignIn() {
             Sign In
           </Button>
           <Grid container>
-            {/*  <Grid item xs>
-              <Link href="./newPassword" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid> */}
             <Grid item>
               <Link href="./signup" variant="body2">
                 {"Don't have an account? Sign Up"}

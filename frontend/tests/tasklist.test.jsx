@@ -47,6 +47,6 @@ describe("TaskList component", () => {
     );
 
     expect(screen.getByText("Welcome John!")).toBeInTheDocument();
-    expect(screen.getByText("Task List")).toBeInTheDocument();
+    expect(screen.getByText("To-do")).toBeInTheDocument();
   });
 });

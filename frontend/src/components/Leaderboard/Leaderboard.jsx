@@ -1,4 +1,4 @@
-import { react, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { Avatar, Box, List, ListItem, Typography } from "@mui/material";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";

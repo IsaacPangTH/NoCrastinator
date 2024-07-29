@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
 import Dialog from "@mui/material/Dialog";
@@ -21,8 +20,6 @@ import { TimePicker } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
-
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
 export default function Task({
   id,

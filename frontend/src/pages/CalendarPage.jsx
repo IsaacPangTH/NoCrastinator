@@ -9,12 +9,10 @@ export default function CalendarPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!alertShownRef.current) {
-      if (!sessionStorage.getItem("user")) {
-        alert("Please Login!");
-        alertShownRef.current = true;
-        return navigate("/login");
-      }
+    if (!alertShownRef.current && !sessionStorage.getItem("user")) {
+      alert("Please Login!");
+      alertShownRef.current = true;
+      return navigate("/login");
     }
   }, []);
 
