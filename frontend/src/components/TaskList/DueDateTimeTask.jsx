@@ -12,13 +12,10 @@ import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import { LocalizationProvider, MobileDateTimePicker } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { parse, formatISO, parseISO, isBefore, isFuture, format } from "date-fns";
-import { Card, Chip, Divider, Snackbar, TextField } from "@mui/material";
-import { TimePicker } from "@mui/x-date-pickers";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
+import { Chip, Snackbar, TextField } from "@mui/material";
+import DtPicker from "../UI/DtPicker";
+import ScheduledCard from "./ScheduledCard";
 
 export default function DueDateTimeTask({
   id,
@@ -39,7 +36,7 @@ export default function DueDateTimeTask({
   const [taskEndDateTime, setTaskEndDateTime] = useState(null);
   const [openInvalidStartEndTime, setOpenInvalidStartEndTime] = useState(false);
   const [editTaskDialogOpen, setEditTaskDialogOpen] = useState(false);
-  const [editTaskDueDateSelected, setEditTaskDueDateSelected] = useState(false);
+  const [editDueDate, setEditDueDate] = useState(parseISO(dueDate));
 
   const open = Boolean(anchorEl);
   const handleMenuClick = (event) => {
@@ -51,11 +48,10 @@ export default function DueDateTimeTask({
 
   const handleEditTask = () => {
     setEditTaskDialogOpen(true);
-    setEditTaskDueDateSelected(true);
   };
   const handleCloseEditTask = () => {
     setEditTaskDialogOpen(false);
-    setEditTaskDueDateSelected(true);
+    setEditDueDate(parseISO(dueDate));
   };
 
   const handleSchedule = () => setScheduleTaskDialogOpen(true);
@@ -89,31 +85,7 @@ export default function DueDateTimeTask({
           />
         </Box>
 
-        {start && end && (
-          <Box paddingX={3} paddingY={0.5}>
-            <Card
-              variant="outlined"
-              sx={{
-                backgroundColor: "#1976D2",
-                color: "#FFF",
-                display: "flex",
-                alignItems: "center",
-                borderRadius: 3,
-              }}
-            >
-              <Typography variant="body2" paddingX={1}>
-                Scheduled
-              </Typography>
-              <Divider orientation="vertical" flexItem sx={{ backgroundColor: "#FFF" }} />
-              <Box display="flex" flexDirection="column" paddingX={1} alignItems="end">
-                <Typography variant="body2">
-                  Start: {format(start, "do MMM yyyy, HH:mm")}
-                </Typography>{" "}
-                <Typography variant="body2">End: {format(end, "do MMM yyyy, HH:mm")}</Typography>
-              </Box>
-            </Card>
-          </Box>
-        )}
+        {start && end && <ScheduledCard start={start} end={end} />}
 
         <IconButton
           id={"menu-button-" + id}
@@ -183,40 +155,26 @@ export default function DueDateTimeTask({
       >
         <DialogTitle>Schedule Task</DialogTitle>
         <DialogContent>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <Stack spacing={3}>
-              <MobileDateTimePicker
-                required
-                label="Start"
-                id="startDateTime"
-                name="startDateTime"
-                slotProps={{
-                  textField: {
-                    required: true,
-                  },
-                }}
-                orientation="landscape"
-                value={taskStartDateTime}
-                onChange={(newValue) => setTaskStartDateTime(newValue)}
-                format="yyyy-MM-dd HH:mm"
-              />
-              <MobileDateTimePicker
-                required
-                label="End"
-                id="endDateTime"
-                name="endDateTime"
-                slotProps={{
-                  textField: {
-                    required: true,
-                  },
-                }}
-                orientation="landscape"
-                value={taskEndDateTime}
-                onChange={(newValue) => setTaskEndDateTime(newValue)}
-                format="yyyy-MM-dd HH:mm"
-              />
-            </Stack>
-          </LocalizationProvider>
+          <Stack spacing={3}>
+            <DtPicker
+              type="DateTime"
+              label="Start"
+              id="startDateTime"
+              name="startDateTime"
+              value={taskStartDateTime}
+              onChange={(newValue) => setTaskStartDateTime(newValue)}
+              required={true}
+            />
+            <DtPicker
+              type="DateTime"
+              label="End"
+              id="endDateTime"
+              name="endDateTime"
+              value={taskEndDateTime}
+              onChange={(newValue) => setTaskEndDateTime(newValue)}
+              required={true}
+            />
+          </Stack>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseScheduleDialog}>Cancel</Button>
@@ -258,34 +216,24 @@ export default function DueDateTimeTask({
               fullWidth
               variant="standard"
             />
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DatePicker
-                label="Due Date (optional)"
-                defaultValue={parseISO(dueDate)}
-                id="dueDate"
-                name="dueDate"
-                slotProps={{
-                  field: { clearable: true, onClear: () => setEditTaskDueDateSelected(false) },
-                }}
-                format="yyyy-LL-dd"
-                onChange={() => setEditTaskDueDateSelected(true)}
+            <DtPicker
+              type="Date"
+              label="Due Date (optional)"
+              id="dueDate"
+              name="dueDate"
+              value={editDueDate}
+              onChange={(newValue) => setEditDueDate(newValue)}
+              onClear={() => setEditDueDate(null)}
+            />
+            {editDueDate && (
+              <DtPicker
+                type="Time"
+                label="Time Due (optional)"
+                defaultValue={parse(dueTime, "HH:mm", parseISO(dueDate))}
+                id="dueTime"
+                name="dueTime"
               />
-              {editTaskDueDateSelected && (
-                <TimePicker
-                  label="Time Due (optional)"
-                  defaultValue={parse(dueTime, "HH:mm", parseISO(dueDate))}
-                  id="dueTime"
-                  name="dueTime"
-                  viewRenderers={{
-                    hours: renderTimeViewClock,
-                    minutes: renderTimeViewClock,
-                    seconds: renderTimeViewClock,
-                  }}
-                  slotProps={{ field: { clearable: true } }}
-                  format="HH:mm"
-                />
-              )}
-            </LocalizationProvider>
+            )}
           </Stack>
         </DialogContent>
         <DialogActions>
