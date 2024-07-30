@@ -21,18 +21,15 @@ import {
   Typography,
 } from "@mui/material";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
-import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
-import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 import NoCrastinatorLogo from "../../assets/NoCrastinatorLogo.png";
+import DtPicker from "../UI/DtPicker";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
 export default function Tasks() {
   const [tasks, setTasks] = useState([]);
   const [addTaskDialogOpen, setAddTaskDialogOpen] = useState(false);
-  const [newTaskDueDateSelected, setNewTaskDueDateSelected] = useState(false);
+  const [newTaskDueDate, setNewTaskDueDate] = useState(null);
   const [update, setUpdate] = useState(false);
 
   const handleComplete = async (id) => {
@@ -118,12 +115,12 @@ export default function Tasks() {
 
   const handleAddTask = () => {
     setAddTaskDialogOpen(true);
-    setNewTaskDueDateSelected(false);
+    setNewTaskDueDate(null);
     setUpdate(true);
   };
   const handleCloseAddTask = () => {
     setAddTaskDialogOpen(false);
-    setNewTaskDueDateSelected(false);
+    setNewTaskDueDate(null);
     setUpdate(true);
   };
 
@@ -147,8 +144,8 @@ export default function Tasks() {
           const due = incomplete[0].dueTime
             ? `hich is due on ${incomplete[0].dueDate}, ${incomplete[0].dueTime}`
             : incomplete[0].dueDate
-            ? `which is due on ${incomplete[0].dueDate}`
-            : "which has no deadline";
+              ? `which is due on ${incomplete[0].dueDate}`
+              : "which has no deadline";
           body = `The most urgent is ${incomplete[0].title} ${due}`;
         } else {
           title = "You have no more tasks";
@@ -220,32 +217,18 @@ export default function Tasks() {
               fullWidth
               variant="standard"
             />
-            <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale={navigator.language}>
-              <DatePicker
-                label="Due Date (optional)"
-                id="dueDate"
-                name="dueDate"
-                slotProps={{
-                  field: { clearable: true, onClear: () => setNewTaskDueDateSelected(false) },
-                }}
-                format="yyyy-LL-dd"
-                onChange={() => setNewTaskDueDateSelected(true)}
-              />
-              {newTaskDueDateSelected && (
-                <TimePicker
-                  label="Time Due (optional)"
-                  id="dueTime"
-                  name="dueTime"
-                  viewRenderers={{
-                    hours: renderTimeViewClock,
-                    minutes: renderTimeViewClock,
-                    seconds: renderTimeViewClock,
-                  }}
-                  slotProps={{ field: { clearable: true } }}
-                  format="HH:mm"
-                />
-              )}
-            </LocalizationProvider>
+            <DtPicker
+              type="Date"
+              label="Due Date (optional)"
+              id="dueDate"
+              name="dueDate"
+              value={newTaskDueDate}
+              onChange={(newValue) => setNewTaskDueDate(newValue)}
+              onClear={() => setNewTaskDueDate(null)}
+            />
+            {newTaskDueDate && (
+              <DtPicker type="Time" label="Time Due (optional)" id="dueTime" name="dueTime" />
+            )}
           </Stack>
         </DialogContent>
         <DialogActions>
