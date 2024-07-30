@@ -4,15 +4,6 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import TaskList from "../src/pages/TaskList";
 import { vi } from "vitest";
 
-// Mocking the NavBar and Tasks components
-vi.mock("../src/components/NavBar", () => ({
-  default: ({ children }) => <div>{children}</div>,
-}));
-
-vi.mock("../src/components/Tasks", () => ({
-  default: () => <div>Mocked Tasks</div>,
-}));
-
 describe("TaskList component", () => {
   beforeEach(() => {
     sessionStorage.clear();

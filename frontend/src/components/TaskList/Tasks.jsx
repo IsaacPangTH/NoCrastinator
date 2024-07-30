@@ -35,6 +35,31 @@ export default function Tasks() {
   const [newTaskDueDateSelected, setNewTaskDueDateSelected] = useState(false);
   const [update, setUpdate] = useState(false);
 
+  const sendNoti = (tasks) => {
+    if (Notification.permission === "granted" && !sessionStorage.getItem("notification")) {
+      const incomplete = tasks.filter((el) => !el.isCompleted);
+      let title = "";
+      let body = "";
+      if (incomplete[0]) {
+        title = `You still have tasks to do`;
+        const due = incomplete[0].dueTime
+          ? `which is due on ${incomplete[0].dueDate}, ${incomplete[0].dueTime}`
+          : incomplete[0].dueDate
+          ? `which is due on ${incomplete[0].dueDate}`
+          : "which has no deadline";
+        body = `The most urgent is ${incomplete[0].title} ${due}`;
+      } else {
+        title = "You have no more tasks";
+        body = "Add more tasks or take a break!";
+      }
+      new Notification(title, {
+        body: body,
+        icon: NoCrastinatorLogo,
+      });
+      sessionStorage.setItem("notification", true);
+    }
+  };
+
   const handleComplete = async (id) => {
     try {
       await axios.patch(
@@ -138,28 +163,7 @@ export default function Tasks() {
           },
         }
       );
-      if (Notification.permission === "granted" && !sessionStorage.getItem("notification")) {
-        const incomplete = response.data.filter((el) => !el.isCompleted);
-        let title = "";
-        let body = "";
-        if (incomplete[0]) {
-          title = `You still have tasks to do`;
-          const due = incomplete[0].dueTime
-            ? `which is due on ${incomplete[0].dueDate}, ${incomplete[0].dueTime}`
-            : incomplete[0].dueDate
-            ? `which is due on ${incomplete[0].dueDate}`
-            : "which has no deadline";
-          body = `The most urgent is ${incomplete[0].title} ${due}`;
-        } else {
-          title = "You have no more tasks";
-          body = "Add more tasks or take a break!";
-        }
-        new Notification(title, {
-          body: body,
-          icon: NoCrastinatorLogo,
-        });
-        sessionStorage.setItem("notification", true);
-      }
+      sendNoti(response.data);
       setTasks(response.data);
     };
     fetchData();
