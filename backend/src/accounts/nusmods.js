@@ -43,7 +43,7 @@ const nusmods = async (data) => {
   try {
     const res = await client.query(`SELECT link FROM accounts WHERE id=$1`, [data.user]);
     const link = res.rows[0].link;
-    if (link == "") {
+    if (link == "" || !link.split("?")[1]) {
       return [];
     }
     const array = [];
@@ -96,7 +96,7 @@ const nusmods = async (data) => {
     return array;
   } catch (err) {
     console.error(err);
-    return "Error! Please try again later.";
+    return [];
   } finally {
     await client.end();
   }
